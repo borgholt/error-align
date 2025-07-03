@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "python-package-template"
+version = "0"
+description = ""
+authors = ["Machine Learning R&D"]
+readme = "README.md"
+
+packages = [
+    { include = 'python_package_template', from = 'src' },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ipython = "9.3.0"
+ruff = ">=0.1,<0.13"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pre-commit = "^4.2.0"
+pytest = ">=7.4.3,<9.0.0"
+pytest-azurepipelines = "^1.0.5"
+pytest-cov = "^6.1.1"
+pytest-mock = "^3.14.0"
+requests = "^2.31.0"
+typeguard = "^4.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

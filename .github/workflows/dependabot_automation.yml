@@ -1,0 +1,52 @@
+name: Dependabot PR automation
+on:
+  pull_request:
+  workflow_dispatch:  # Option for manual trigger
+
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write
+  contents: write
+
+jobs:
+  dependabot-automation:
+    runs-on: ubuntu-latest
+
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      # Fetch metadata from Dependabot
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Apply patch label
+        run: |
+          gh pr edit "$PR_URL" --remove-label "major"
+          gh pr edit "$PR_URL" --remove-label "minor"
+          gh pr edit "$PR_URL" --add-label "patch"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        # If the PR is a pip upgrade to an indirect dependency, a development dependency, or a patch ugprade to a
+        # production dependency, merge PR when CI passes and review is performed.
+      - name: Auto-merge PR
+        if: |
+          steps.metadata.outputs.package-ecosystem == 'pip' &&
+          (steps.metadata.outputs.dependency-type == 'indirect' ||
+          steps.metadata.outputs.dependency-type == 'direct:development' ||
+          (steps.metadata.outputs.dependency-type == 'direct:production' &&
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'))
+        run: |
+          gh pr merge "$PR_URL" --auto --squash
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # Automatically approve all PRs opened by dependabot.
+      - name: Approve PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}  # TODO: Use a separate token for approving PRs
