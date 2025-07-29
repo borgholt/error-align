@@ -1,16 +1,20 @@
 [tool.poetry]
-name = "python-package-template"
+name = "error-align"
 version = "0"
 description = ""
-authors = ["Machine Learning R&D"]
+authors = ["Lasse Borgholt"]
 readme = "README.md"
 
 packages = [
-    { include = 'python_package_template', from = 'src' },
+    { include = 'error_align', from = 'src' },
 ]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
+regex = "^2024.11.6"
+tqdm = "^4.67.1"
+rapidfuzz = "^3.13.0"
+numba = "^0.61.2"
 
 [tool.poetry.group.dev]
 optional = true
@@ -30,6 +34,21 @@ pytest-cov = "^6.1.1"
 pytest-mock = "^3.14.0"
 requests = "^2.31.0"
 typeguard = "^4.4.2"
+
+
+[tool.poetry.group.evaluation.dependencies]
+datasets = "^3.3.2"
+soundfile = "^0.13.1"
+librosa = "^0.11.0"
+click = "^8.2.1"
+pandas = "^2.3.1"
+scipy = "^1.16.1"
+tqdm = "^4.67.1"
+textgrid = "^1.6.1"
+nemo-toolkit = {extras = ["all"], version = "^2.4.0"}
+transformers = "4.51.3"
+backoff = "^2.2.1"
+
 
 [build-system]
 requires = ["poetry-core"]
