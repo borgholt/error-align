@@ -74,6 +74,17 @@ def normalize_char(c: str) -> str:
     """
     return unicodedata.normalize("NFD", c)[0].lower()
 
+def normalize_evaluation_segment(segment: str) -> str:
+    """Normalize a segment by removing accents and converting to lowercase.
+
+    Args:
+        segment (str): The segment to normalize.
+
+    Returns:
+        str: The normalized segment.
+    """
+    return re.sub(r'[^a-z0-9]', '', unicodedata.normalize("NFD", segment).lower())
+
 
 def is_vowel(c: str) -> bool:
     """Check if the normalized character is a vowel.
@@ -137,7 +148,7 @@ def basic_tokenizer(text: str) -> list:
     Returns:
         list: A list of tokens (words).
     """
-    return list(re.finditer(r"(\p{N}+([,.]\p{N}+)+)|([\p{L}\p{N}]+)", text, re.UNICODE | re.VERBOSE))
+    return list(re.finditer(r"(\p{N}+([,.]\p{N}+)+)|([\p{L}\p{N}']+)", text, re.UNICODE | re.VERBOSE))
 
 
 def basic_normalizer(text: str) -> str:

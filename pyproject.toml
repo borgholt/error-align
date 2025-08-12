@@ -48,6 +48,8 @@ textgrid = "^1.6.1"
 nemo-toolkit = {extras = ["all"], version = "^2.4.0"}
 transformers = "4.51.3"
 backoff = "^2.2.1"
+gitpython = "^3.1.45"
+pyphen = "^0.17.2"
 
 
 [build-system]

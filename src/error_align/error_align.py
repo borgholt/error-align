@@ -72,7 +72,7 @@ class ErrorAlign:
         self._optimal_alignment_graph = OptimalAlignmentGraph(B)
         self._oga_node_indices = self._optimal_alignment_graph.get_node_indices()
 
-    def align(self, beam_size=100) -> list[Alignment]:
+    def align(self, beam_size=100, pbar=True) -> list[Alignment]:
         """
         Perform the alignment process.
         """
@@ -86,7 +86,8 @@ class ErrorAlign:
 
         # Iterate through the paths until we reach the end of both sequences.
         total_mdist = self._ref_max_idx + self._hyp_max_idx + 2
-        progress_bar = tqdm(total=total_mdist, desc="Aligning transcripts")
+        if pbar:
+            progress_bar = tqdm(total=total_mdist, desc="Aligning transcripts")
         while len(beam) > 0:
             for i, path in enumerate(beam.values()):  # DELETE
                 path._ranks.append(i)  # DELETE: Store ranks for debugging
@@ -129,11 +130,13 @@ class ErrorAlign:
             try:
                 worst_path = next(reversed(beam.values()))
                 mdist = get_manhattan_distance(worst_path.index, self.end_index)
-                progress_bar.n = total_mdist - mdist
-                progress_bar.refresh()
+                if pbar:
+                    progress_bar.n = total_mdist - mdist
+                    progress_bar.refresh()
             except StopIteration:
-                progress_bar.n = total_mdist
-                progress_bar.refresh()
+                if pbar:
+                    progress_bar.n = total_mdist
+                    progress_bar.refresh()
 
         # print(f"### END: {len(ended)} paths ended, {paths_pruned} diversity pruned")
         ended.sort(key=lambda p: p.score)
