@@ -5,7 +5,7 @@
       <stop offset="0" stop-color="#ff0033" />         <!-- Red -->
       <stop offset="0.55" stop-color="#000000" />      <!-- Early transition to Black -->
       <stop offset="0.65" stop-color="rgba(0, 0, 0, 1)" />      <!-- Black dominant region -->
-      <stop offset="1" stop-color="#ff0033" />         <!-- Green -->
+      <stop offset="1" stop-color="#28b33fff" />         <!-- Green -->
     </linearGradient>
 
     <!-- Soft drop shadow -->
