@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="50%"/>
+  <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="58%"/>
 </p>
 <br/>
 Text-to-text alignment algorithm for speech recognition error analysis.

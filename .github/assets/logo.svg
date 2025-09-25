@@ -47,7 +47,7 @@
           font-size="220"
           letter-spacing="-2"
           fill="url(#g)"
-          stroke="#428c40ff"
+          stroke="#bebebeff"
           stroke-opacity="1"
           stroke-width="20"
           paint-order="stroke fill">
