@@ -45,9 +45,9 @@
           font-weight="700"
           font-style="italic"
           font-size="220"
-          letter-spacing="-10"
+          letter-spacing="-2"
           fill="url(#g)"
-          stroke="#0a4c08ff"
+          stroke="#428c40ff"
           stroke-opacity="1"
           stroke-width="20"
           paint-order="stroke fill">
