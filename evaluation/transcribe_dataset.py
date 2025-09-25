@@ -9,12 +9,9 @@ from datasets import Dataset, load_dataset
 from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig, WhisperForConditionalGeneration
 from tqdm import tqdm
 
-
 import warnings
 import os
-import sys
 import contextlib
-from io import StringIO
 
 @contextlib.contextmanager
 def suppress_all_output():
@@ -66,6 +63,8 @@ class Phi4MultimodalInstuct:
         sampling_rate = example["audio"]["sampling_rate"]
 
         # Preprocess data, run model, and decode response.
+        if len(audio) < 400:
+            audio = np.pad(audio, (0, 400 - len(audio)), mode='constant')
         inputs = self.processor(
             text=self.prompt,
             audios=[(audio, sampling_rate)],
@@ -100,7 +99,10 @@ class WhisperLargeV3:
         ).cuda()
         self.generation_config = GenerationConfig.from_pretrained(self.model_path)
         self.generation_config.return_timestamps = True
-        self.generation_config.forced_decoder_ids = None
+        self.generation_config.forced_decoder_ids = self.processor.get_decoder_prompt_ids(
+            language=language_code,
+            task="transcribe"
+        )
         self.language_code = language_code
 
     def transcribe(self, example: dict):
@@ -111,9 +113,11 @@ class WhisperLargeV3:
         sampling_rate = example["audio"]["sampling_rate"]
 
         # Preprocess data, run model, and decode response.
+        if sampling_rate != 16_000:
+            audio = librosa.resample(audio, orig_sr=sampling_rate, target_sr=16_000)
         inputs = self.processor(
             audio=audio,
-            sampling_rate=sampling_rate,
+            sampling_rate=16_000,
             return_tensors="pt",
         ).to("cuda:0")
         generated_ids = self.model.generate(
@@ -201,7 +205,7 @@ def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = N
     """Load a dataset in Hugging Face format."""
 
     # Check if the dataset is supported and load it accordingly.
-    if dataset_name == "common_voice":
+    if dataset_name == "commonvoice":
         dataset = load_dataset("mozilla-foundation/common_voice_17_0", language_code)
         dataset = dataset.rename_columns({"sentence": "ref", "client_id": "id"})
     elif dataset_name == "primock57":
@@ -235,7 +239,7 @@ def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = N
 )
 @click.option(
     "--dataset_name",
-    type=click.Choice(["common_voice", "primock57", "tedlium"]),
+    type=click.Choice(["commonvoice", "primock57", "tedlium"]),
     help="Name of the dataset to load.",
     required=True,
 )
@@ -260,9 +264,9 @@ def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = N
 def main(model_name: str, dataset_name: str, subset_name: str, language_code: str, primock_path: str = None):
     """Main function to load the model and process data."""
 
-    model = load_model(model_name)
+    model = load_model(model_name, language_code=language_code)
     dataset = load_hf_dataset(dataset_name, language_code, primock_path)[subset_name]
-    
+
     transcribed_dataset = []
     for example in tqdm(dataset):
         hyp = model.transcribe(example)["hyp"]

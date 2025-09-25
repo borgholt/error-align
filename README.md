@@ -1,28 +1,33 @@
-# <auto-title>PYTHON PACKAGE TEMPLATE</auto-title>
+<div style="text-align: center; margin-bottom: 30px;">
+  <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="60%"/>
+</div>
 
-Template for creating Python packages. Put your short project description here.
+Text-to-text alignment algorithm for speech recognition error analysis.
 
-To configure this package and create an Azure Pipeline, see [this Notion page](https://www.notion.so/cortihome/Creating-a-new-GitHub-repository-with-CI-pipeline-9241fb356ead448b941a9d4cfa4daf73).
+:construction: **Work-in-progress**: C++ version with Python bindings.
 
-## Installation
+### Install
 
-### For development purposes
-
-```bash
-make install
+```
+pip install error_align
 ```
 
-## Run tests
+### Use
+```
+from error_align import ErrorAlign
 
-```bash
-make test
-make pre-commit
+ref = "Some things are worth noting!"
+hyp = "Something worth nothing period?"
+
+alignments = ErrorAlign(ref, hyp).align()
 ```
 
-### As a dependency
-
-Add the following line to your `pyproject.toml` file:
-
-```toml
-python-package-template = { git = "ssh://git@github.com/corticph/python-package-template.git", tag="vX.Y.Z"}
+Resulting `alignments`:
+```
+Alignment(SUBSTITUTE: Some -> Some-),
+Alignment(SUBSTITUTE: things -> -thing),
+Alignment(DELETE: are),
+Alignment(MATCH: worth == worth),
+Alignment(SUBSTITUTE: noting -> nothing),
+Alignment(INSERT: period)
 ```

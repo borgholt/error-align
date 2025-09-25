@@ -10,11 +10,29 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
+
+# Core dependencies
 python = ">=3.11,<3.13"
 regex = "^2024.11.6"
 tqdm = "^4.67.1"
 rapidfuzz = "^3.13.0"
 numba = "^0.61.2"
+num2words = "^0.5.14"
+
+# Extra dependencies
+datasets = { version = "^3.3.2", optional = true }
+soundfile = { version = "^0.13.1", optional = true }
+librosa = { version = "^0.11.0", optional = true }
+click = { version = "^8.2.1", optional = true }
+pandas = { version = "^2.3.1", optional = true }
+scipy = { version = "^1.16.1", optional = true }
+textgrid = { version = "^1.6.1", optional = true }
+nemo-toolkit = {extras = ["all"], version = "^2.4.0", optional = true}
+transformers = { version = "^4.51.3", optional = true }
+backoff = { version = "^2.2.1", optional = true }
+gitpython = { version = "^3.1.45", optional = true }
+pyphen = { version = "^0.17.2", optional = true }
+matplotlib = { version = "^3.10.6", optional = true }
 
 [tool.poetry.group.dev]
 optional = true
@@ -35,21 +53,21 @@ pytest-mock = "^3.14.0"
 requests = "^2.31.0"
 typeguard = "^4.4.2"
 
-
-[tool.poetry.group.evaluation.dependencies]
-datasets = "^3.3.2"
-soundfile = "^0.13.1"
-librosa = "^0.11.0"
-click = "^8.2.1"
-pandas = "^2.3.1"
-scipy = "^1.16.1"
-tqdm = "^4.67.1"
-textgrid = "^1.6.1"
-nemo-toolkit = {extras = ["all"], version = "^2.4.0"}
-transformers = "4.51.3"
-backoff = "^2.2.1"
-gitpython = "^3.1.45"
-pyphen = "^0.17.2"
+[tool.poetry.extras]
+evaluation = [
+    "datasets",
+    "soundfile",
+    "librosa",
+    "click",
+    "pandas",
+    "scipy",
+    "textgrid",
+    "nemo-toolkit",
+    "transformers",
+    "backoff",
+    "gitpython",
+    "pyphen",
+    "matplotlib"]
 
 
 [build-system]

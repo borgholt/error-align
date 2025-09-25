@@ -5,6 +5,7 @@ from itertools import chain
 from itertools import combinations
 
 import regex as re
+from num2words import num2words
 
 
 class OpType(IntEnum):
@@ -12,25 +13,27 @@ class OpType(IntEnum):
     INSERT = 1
     DELETE = 2
     SUBSTITUTE = 3
-    
+
+
 @dataclass
 class Alignment:
     """Class representing an operation with its type and cost."""
+
     op_type: OpType
     ref_slice: slice | None = None
     hyp_slice: slice | None = None
     ref: str | None = None
     hyp: str | None = None
-    left_compound: bool | None = None
-    right_compound: bool | None = None
-    
+    left_compound: bool = False
+    right_compound: bool = False
+
     @property
     def hyp_with_compound_markers(self) -> str:
         """Return the hypothesis with compound markers if applicable."""
         if self.hyp is None:
             return None
         return f"{'-' if self.left_compound else ''}{self.hyp}{'-' if self.right_compound else ''}"
-        
+
     def __repr__(self):
         if self.op_type == OpType.INSERT:
             return f"Alignment({self.op_type.name}: {self.ref})"
@@ -54,13 +57,16 @@ def op_type_powerset():
     return chain.from_iterable(op_combinations)
 
 
-DELIMITERS = {"<", ">"}
+START_DELIMITER = "<"
+END_DELIMITER = ">"
+DELIMITERS = {START_DELIMITER, END_DELIMITER}
 
 OP_TYPE_MAP = {op_type.value: op_type for op_type in OpType}
-
 OP_TYPE_COMBO_MAP = {i: op_types for i, op_types in enumerate(op_type_powerset())}
-
 OP_TYPE_COMBO_MAP_INV = {v: k for k, v in OP_TYPE_COMBO_MAP.items()}
+
+NUMERIC_TOKEN = r"\p{N}+([,.]\p{N}+)*(?=\s|$)"
+STANDARD_TOKEN = r"[\p{L}\p{N}]+(['][\p{L}\p{N}]+)*'?"  # r"[\p{L}\p{N}]+([-'][\p{L}\p{N}]+)*'?"
 
 
 def normalize_char(c: str) -> str:
@@ -74,17 +80,6 @@ def normalize_char(c: str) -> str:
     """
     return unicodedata.normalize("NFD", c)[0].lower()
 
-def normalize_evaluation_segment(segment: str) -> str:
-    """Normalize a segment by removing accents and converting to lowercase.
-
-    Args:
-        segment (str): The segment to normalize.
-
-    Returns:
-        str: The normalized segment.
-    """
-    return re.sub(r'[^a-z0-9]', '', unicodedata.normalize("NFD", segment).lower())
-
 
 def is_vowel(c: str) -> bool:
     """Check if the normalized character is a vowel.
@@ -95,7 +90,7 @@ def is_vowel(c: str) -> bool:
     Returns:
         bool: True if the character is a vowel, False otherwise.
     """
-    return c in "aeiou"
+    return c in "aeiouæøå"
 
 
 def is_consonant(c: str) -> bool:
@@ -131,6 +126,28 @@ def same_type_letter(a: str, b: str) -> bool:
     return (is_vowel(a) and is_vowel(b)) or (is_consonant(a) and is_consonant(b))
 
 
+def categorize_char(c: str) -> str:
+    """
+    Categorize a character as 'vowel', 'consonant', or 'unvoiced'.
+
+    Args:
+        c (str): The character to categorize.
+
+    Returns:
+        str: The category of the character.
+    """
+    if c in DELIMITERS:
+        return 0
+    elif is_consonant(c):
+        return 1
+    elif is_vowel(c):
+        return 2
+    elif c == "'":
+        return 3
+    else:
+        return 4
+
+
 def get_manhattan_distance(a: tuple[int], b: tuple[int]) -> int:
     """
     Calculate the Manhattan distance between two points a and b.
@@ -148,10 +165,11 @@ def basic_tokenizer(text: str) -> list:
     Returns:
         list: A list of tokens (words).
     """
-    return list(re.finditer(r"(\p{N}+([,.]\p{N}+)+)|([\p{L}\p{N}']+)", text, re.UNICODE | re.VERBOSE))
+
+    return list(re.finditer(rf"({NUMERIC_TOKEN})|({STANDARD_TOKEN})", text, re.UNICODE | re.VERBOSE))
 
 
-def basic_normalizer(text: str) -> str:
+def basic_normalizer(text: str, lang: str = "en") -> str:
     """
     Default normalizer that converts text to lowercase and removes accents.
 
@@ -161,4 +179,16 @@ def basic_normalizer(text: str) -> str:
     Returns:
         str: The normalized text.
     """
+
+    if bool(re.match(NUMERIC_TOKEN, text)):
+        if lang == "en":
+            text = text.replace(",", "")
+        else:
+            text = text.replace(".", "")
+            text = text.replace(",", ".")
+        try:
+            return num2words(text, lang=lang)
+        except Exception as e:
+            print(f"\nError converting number to words: {text}\n")
+
     return text.lower()

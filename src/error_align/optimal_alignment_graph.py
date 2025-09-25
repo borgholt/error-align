@@ -1,4 +1,6 @@
 import random
+from collections import defaultdict, Counter
+from sys import path
 
 from error_align.utils import OpType, OP_TYPE_COMBO_MAP
 
@@ -162,7 +164,7 @@ class OptimalAlignmentGraph:
         """
         transitions = set()
         for node in self.nodes.values():
-            transitions.add(node.index)
+            transitions.add(node.offset_index)
         return transitions
     
     def get_path(self, sample=False):
@@ -189,6 +191,37 @@ class OptimalAlignmentGraph:
             path.append((op_type, node))
         
         return path
+
+    def get_unambiguous_matches(self, ref):
+        """
+        Get word spans that are unambiguously matched (i.e., only one path in optimal alignment graph).
+
+        Returns:
+            list[Node]: A list of nodes representing the unambiguous path.
+        """
+        
+        ref = "*" + ref # Index offset
+        mono_match_end_nodes = set()
+        ref_idxs = Counter()
+        hyp_idxs = Counter()
+        for (hyp_idx, ref_idx), node in self.nodes.items():
+            if OpType.MATCH in node.parents and ref[ref_idx]== "<":
+                _ref_idx, _hyp_idx = ref_idx + 1, hyp_idx + 1
+                while True:
+                    if (_hyp_idx, _ref_idx) not in self.nodes:
+                        break
+                    if OpType.MATCH not in self.nodes[(_hyp_idx, _ref_idx)].parents:
+                        break
+                    if ref[_ref_idx] == ">":
+                        end_index = (_hyp_idx, _ref_idx)
+                        mono_match_end_nodes.add(end_index)
+                        ref_idxs[_ref_idx] += 1
+                        hyp_idxs[_hyp_idx] += 1
+                        break
+                    _ref_idx, _hyp_idx = _ref_idx + 1, _hyp_idx + 1
+                            
+
+        return {(h - 1, r - 1) for h, r in mono_match_end_nodes if hyp_idxs[h] == 1 and ref_idxs[r] == 1}
 
     def _parent_index_from_op_type(self, hyp_idx, ref_idx, op_type):
         """

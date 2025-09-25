@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="ErrorAlign logo" overflow="visible">
+  <defs>
+    <!-- Red to Black to Green gradient (black dominant) -->
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff0033" />         <!-- Red -->
+      <stop offset="0.45" stop-color="#000000" />      <!-- Early transition to Black -->
+      <stop offset="0.75" stop-color="#000000" />      <!-- Black dominant region -->
+      <stop offset="1" stop-color="#00ff66" />         <!-- Green -->
+    </linearGradient>
+
+    <!-- Soft drop shadow -->
+    <filter id="ds" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b" />
+      <feOffset dx="8" dy="-4" result="o" />
+      <feMerge>
+        <feMergeNode in="o"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+      <feColorMatrix type="matrix" values="0 0 0 0 0
+                                           0 0 0 0 0
+                                           0 0 0 0 0
+                                           0 0 0 0.25" />
+    </filter>
+
+    <!-- Slight outline for contrast -->
+    <mask id="soft-edge">
+      <rect width="100%" height="100%" fill="white"/>
+    </mask>
+  </defs>
+
+  <!-- the text -->
+  <g filter="url(#ds)" mask="url(#soft-edge)">
+    <text x="50%" y="160"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+          font-weight="700"
+          font-style="italic"
+          font-size="220"
+          letter-spacing="-2"
+          fill="url(#g)"
+          stroke="rgba(0,0,0,0.7)"
+          stroke-width="1.5"
+          paint-order="stroke fill">
+      ErrorAlign
+    </text>
+  </g>
+</svg>

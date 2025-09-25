@@ -1,18 +1,10 @@
-from collections import defaultdict
-
-import numpy as np
-from tqdm import tqdm
-
 from error_align.edit_distance import compute_optimal_word_alignment_distance_matrix
 from error_align.optimal_alignment_graph import OptimalAlignmentGraph
 from error_align.utils import (
     Alignment,
     basic_normalizer,
     basic_tokenizer,
-    DELIMITERS,
-    get_manhattan_distance,
     OpType,
-    same_type_letter,
 )
 
 
