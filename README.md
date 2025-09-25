@@ -33,6 +33,6 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 
-<div style="background-color:#8B0000; color:white; padding:10px; border-radius:6px; text-align:center;">
+<p style="background-color:#8B0000; color:white; padding:10px; border-radius:6px; text-align:center;">
 :contruction: **Work-in-progress**: C++ version with Python bindings.
-</div>
+</p>
