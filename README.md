@@ -5,13 +5,14 @@
 Text-to-text alignment algorithm for speech recognition error analysis.
 
 
-
+---
 
 ### Install
 
 ```
 pip install error_align
 ```
+---
 
 ### Use
 ```python
@@ -32,7 +33,7 @@ Alignment(MATCH: "worth" == "worth"),
 Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
-
-<p style="background-color:#8B0000; color:white; padding:10px; border-radius:6px; text-align:center;">
+---
+<p style="text-align:center;">
 :contruction: **Work-in-progress**: C++ version with Python bindings.
 </p>
