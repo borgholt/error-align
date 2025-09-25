@@ -1,10 +1,11 @@
 <p align="center">
   <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="50%"/>
 </p>
-<br/><br/>
+<br/>
 Text-to-text alignment algorithm for speech recognition error analysis.
 
-:construction: **Work-in-progress**: C++ version with Python bindings.
+
+
 
 ### Install
 
@@ -31,3 +32,7 @@ Alignment(MATCH: "worth" == "worth"),
 Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
+
+<div style="background-color:#8B0000; color:white; padding:10px; border-radius:6px; text-align:center;">
+:contruction: **Work-in-progress**: C++ version with Python bindings.
+</div>
