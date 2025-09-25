@@ -14,7 +14,7 @@ pip install error_align
 ```
 ---
 
-### Use
+### Usage
 ```python
 from error_align import ErrorAlign
 
@@ -24,7 +24,7 @@ hyp = "Something worth nothing period?"
 alignments = ErrorAlign(ref, hyp).align()
 ```
 
-Resulting `alignments`:
+Resulting alignments:
 ```python
 Alignment(SUBSTITUTE: "Some" -> "Some"-),
 Alignment(SUBSTITUTE: "things" -> -"thing"),
@@ -34,6 +34,5 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 ---
-<p style="text-align:center;">
-:contruction: **Work-in-progress**: C++ version with Python bindings.
-</p>
+### Work-in-progress
+🚧 C++ version with Python bindings.
