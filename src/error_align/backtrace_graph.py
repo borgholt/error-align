@@ -79,8 +79,8 @@ class BacktraceGraph:
     def __init__(self, B) -> None:
         """Create a graph from the backtrace matrix."""
 
-        self.hyp_dim = B.shape[0]
-        self.ref_dim = B.shape[1]
+        self.hyp_dim = len(B) # B.shape[0]
+        self.ref_dim = len(B[0]) # B.shape[1]
         self.hyp_max_idx = self.hyp_dim - 1
         self.ref_max_idx = self.ref_dim - 1
         self.B = B
@@ -215,7 +215,7 @@ class BacktraceGraph:
 
         assert node is not None, f"Node at index {index} does not exist in the graph."
 
-        op_type_combo_code = self.B[node.index]
+        op_type_combo_code = self.B[node.hyp_idx][node.ref_idx] # [node.index]
         op_type_combo = OP_TYPE_COMBO_MAP[op_type_combo_code]
 
         for op_type in op_type_combo:

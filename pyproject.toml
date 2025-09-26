@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "error-align"
 version = "0"
-description = ""
+description = "Text-to-text alignment algorithm for speech recognition error analysis."
 authors = ["Lasse Borgholt"]
 readme = "README.md"
 
@@ -15,11 +15,11 @@ packages = [
 python = ">=3.11,<3.13"
 regex = "^2024.11.6"
 tqdm = "^4.67.1"
-rapidfuzz = "^3.13.0"
-numba = "^0.61.2"
-num2words = "^0.5.14"
+unidecode = "^1.4.0"
 
 # Extra dependencies
+rapidfuzz = { version = "^3.13.0", optional = true }
+num2words = { version = "^0.5.14", optional = true }
 datasets = { version = "^3.3.2", optional = true }
 soundfile = { version = "^0.13.1", optional = true }
 librosa = { version = "^0.11.0", optional = true }
@@ -33,7 +33,8 @@ backoff = { version = "^2.2.1", optional = true }
 gitpython = { version = "^3.1.45", optional = true }
 pyphen = { version = "^0.17.2", optional = true }
 matplotlib = { version = "^3.10.6", optional = true }
-unidecode = "^1.4.0"
+numpy = { version = ">=1.22,<2.0", optional = true }
+
 
 [tool.poetry.group.dev]
 optional = true
@@ -56,6 +57,8 @@ typeguard = "^4.4.2"
 
 [tool.poetry.extras]
 evaluation = [
+    "rapidfuzz",
+    "num2words",
     "datasets",
     "soundfile",
     "librosa",
@@ -68,7 +71,9 @@ evaluation = [
     "backoff",
     "gitpython",
     "pyphen",
-    "matplotlib"]
+    "matplotlib",
+    "numpy",
+]
 
 
 [build-system]

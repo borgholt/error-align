@@ -1,4 +1,6 @@
-from error_align.edit_distance import compute_optimal_word_alignment_distance_matrix
+from rapidfuzz.distance import Levenshtein
+
+from error_align.edit_distance import compute_distance_matrix
 from error_align.backtrace_graph import BacktraceGraph
 from error_align.utils import (
     Alignment,
@@ -7,6 +9,24 @@ from error_align.utils import (
     OpType,
 )
 
+
+def _get_optimal_word_alignment_values(ref_token: str, hyp_token: str):
+    """Compute the optimal word alignment values for deletion, insertion, and diagonal (substitution or match).
+
+    Args:
+        ref_token (str): The reference token.
+        hyp_token (str): The hypothesis token.
+
+    Returns:
+        tuple: A tuple containing the deletion cost, insertion cost, and diagonal cost.
+    """
+    if hyp_token == ref_token:
+        diag_cost = 0
+    else:
+        diag_cost = Levenshtein.distance(ref_token, hyp_token, weights=(1, 1, 2))
+        diag_cost += abs(len(ref_token) - len(hyp_token))
+
+    return len(hyp_token), len(ref_token), diag_cost
 
 class OptimalWordAlign:
     """Optimal word-level alignment based on global-to-local edits (GLE) metric."""
@@ -42,7 +62,13 @@ class OptimalWordAlign:
         self.end_index = (self._hyp_max_idx, self._ref_max_idx)
 
         # Extract backtrace graph.
-        _, B = compute_optimal_word_alignment_distance_matrix(self._ref, self._hyp, backtrace=True)
+        _, B = compute_distance_matrix(
+            self._ref,
+            self._hyp,
+            _get_optimal_word_alignment_values,
+            backtrace=True,
+            dtype=float,
+        )
         self._backtrace_graph = BacktraceGraph(B)
 
     def align(self) -> list[Alignment]:

@@ -69,8 +69,8 @@ class ErrorAlign:
         self.end_index = (self._hyp_max_idx, self._ref_max_idx)
 
         # Create index maps for reference and hypothesis sequences.
-        self._ref_index_map = self._create_index_map(self._ref, self._ref_token_matches)
-        self._hyp_index_map = self._create_index_map(self._hyp, self._hyp_token_matches)
+        self._ref_index_map = self._create_index_map(self._ref_token_matches)
+        self._hyp_index_map = self._create_index_map(self._hyp_token_matches)
 
         # First pass: Extract backtrace graph.
         if not self._identical_inputs:
@@ -167,19 +167,18 @@ class ErrorAlign:
             return ended[0] if len(ended) > 0 else None
         return ended[0].alignments if len(ended) > 0 else []
 
-    def _create_index_map(self, text: str, text_tokens: list[re.Match]) -> np.ndarray:
+    def _create_index_map(self, text_tokens: list[re.Match]) -> list[int]:
         """Create an index map for the given tokens.
 
         The 'index_map' is used to map each aligned character back to its original position in the input text.
 
         NOTE: -1 is used for delimiter (<>) and indicates no match in the source sequence.
-        """
-        index_map = np.full((len(text),), -1, dtype=int)
-        start = 1
+        """    
+        index_map = []
         for match in text_tokens:
-            end = start + len(match.group())
-            index_map[start:end] = np.arange(*match.span(), dtype=int)
-            start = end + 2
+            index_map.extend([-1])  # Start delimiter
+            index_map.extend(list(range(*match.span())))
+            index_map.extend([-1])  # End delimiter
         return index_map
 
     def _identical_input_alignments(self) -> list[Alignment]:
@@ -470,9 +469,9 @@ class Path:
         return new_path
 
     def _translate_slice(self, segment_slice: slice, index_map: np.ndarray):
-        """Translate a slice from the aligned sequence back to the original sequence."""
+        """Translate a slice from the aligned sequence back to the original sequence."""    
         slice_indices = index_map[segment_slice]
-        slice_indices = slice_indices[slice_indices >= 0]
+        slice_indices = list(filter(lambda x: x >= 0, slice_indices))
         if len(slice_indices) == 0:
             return None
         start, end = int(slice_indices[0]), int(slice_indices[-1] + 1)
