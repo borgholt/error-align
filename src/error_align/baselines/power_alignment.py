@@ -3,23 +3,18 @@ from error_align.utils import Alignment, OpType
 
 
 class PowerAlign:
-    """
-    Class to handle optimal word alignment in a sequence.
-    """
+    """Phonetically-oriented word error alignment."""
 
     def __init__(
         self,
         ref: str,
         hyp: str,
     ):
-        """
-        Initialize the optimal word alignment with reference and hypothesis sequences.
+        """Initialize the phonetically-oriented word error alignment with reference and hypothesis texts.
 
         Args:
             ref (str): The reference sequence/transcript.
             hyp (str): The hypothesis sequence/transcript.
-            tokenizer (callable): A function to tokenize the sequences. Must be regex-based and return Match objects.
-            normalizer (callable): A function to normalize the tokens. Defaults to basic_normalizer.
         """
         self.aligner = _PowerAligner(
             ref=ref,
@@ -30,8 +25,10 @@ class PowerAlign:
         )
 
     def align(self):
-        """
-        Extract alignments from the PowerAligner instance.
+        """Run the two-pass Power alignment algorithm.
+
+        Returns:
+            list[Alignment]: A list of Alignment objects.
         """
         self.aligner.align()
         widths = [
@@ -44,22 +41,20 @@ class PowerAlign:
 
         alignments = []
         for (_, ref_token), (_, hyp_token), (_, align_token) in zip(s1_args, s2_args, align_args):
+            
             if align_token == "C":
                 op_type = OpType.MATCH
             if align_token == "S":
                 op_type = OpType.SUBSTITUTE
-            # NOTE: Insertions/deletions are reversed compared to our implementation.
             if align_token == "I":
-                op_type = OpType.DELETE
-            if align_token == "D":
                 op_type = OpType.INSERT
+            if align_token == "D":
+                op_type = OpType.DELETE
 
             alignment = Alignment(
                 op_type=op_type,
                 ref=ref_token,
                 hyp=hyp_token,
-                left_compound=False,
-                right_compound=False,
             )
             alignments.append(alignment)
 

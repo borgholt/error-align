@@ -1,11 +1,11 @@
-import unicodedata
 from dataclasses import dataclass
 from enum import IntEnum
 from itertools import chain
 from itertools import combinations
 
+from unidecode import unidecode
+
 import regex as re
-from num2words import num2words
 
 
 class OpType(IntEnum):
@@ -35,11 +35,11 @@ class Alignment:
         return f"{'-' if self.left_compound else ''}{self.hyp}{'-' if self.right_compound else ''}"
 
     def __repr__(self):
-        lc = '-' if self.left_compound else ''
-        rc = '-' if self.right_compound else ''
-        if self.op_type == OpType.INSERT:
+        lc = "-" if self.left_compound else ""
+        rc = "-" if self.right_compound else ""
+        if self.op_type == OpType.DELETE:
             return f'Alignment({self.op_type.name}: "{self.ref}")'
-        elif self.op_type == OpType.DELETE:
+        elif self.op_type == OpType.INSERT:
             return f'Alignment({self.op_type.name}: "{self.hyp_with_compound_markers}")'
         elif self.op_type == OpType.SUBSTITUTE:
             return f'Alignment({self.op_type.name}: "{self.ref}" -> {lc}"{self.hyp}"{rc})'
@@ -68,19 +68,7 @@ OP_TYPE_COMBO_MAP = {i: op_types for i, op_types in enumerate(op_type_powerset()
 OP_TYPE_COMBO_MAP_INV = {v: k for k, v in OP_TYPE_COMBO_MAP.items()}
 
 NUMERIC_TOKEN = r"\p{N}+([,.]\p{N}+)*(?=\s|$)"
-STANDARD_TOKEN = r"[\p{L}\p{N}]+(['][\p{L}\p{N}]+)*'?"  # r"[\p{L}\p{N}]+([-'][\p{L}\p{N}]+)*'?"
-
-
-def normalize_char(c: str) -> str:
-    """Normalize a character by removing accents.
-
-    Args:
-        c (str): The character to normalize.
-
-    Returns:
-        str: The normalized character in lowercase.
-    """
-    return unicodedata.normalize("NFD", c)[0].lower()
+STANDARD_TOKEN = r"[\p{L}\p{N}]+(['][\p{L}\p{N}]+)*'?"
 
 
 def is_vowel(c: str) -> bool:
@@ -92,7 +80,8 @@ def is_vowel(c: str) -> bool:
     Returns:
         bool: True if the character is a vowel, False otherwise.
     """
-    return c in "aeiouæøå"
+    assert len(c) == 1, "Input must be a single character."
+    return unidecode(c)[0] in "aeiouy"
 
 
 def is_consonant(c: str) -> bool:
@@ -103,29 +92,8 @@ def is_consonant(c: str) -> bool:
     Returns:
         bool: True if the character is a consonant, False otherwise.
     """
-    return c in "bcdfghjklmnpqrstvwxyz"
-
-
-def same_type_letter(a: str, b: str) -> bool:
-    """
-    Returns True if both characters are either vowels or consonants,
-    accounting for accented characters.
-
-    Args:
-        a (str): The first character.
-        b (str): The second character.
-
-    Returns:
-        bool: True if both characters are of the same type (vowel or consonant),
-              False otherwise.
-    """
-    if len(a) != 1 or len(b) != 1:
-        raise ValueError("Both inputs must be single characters.")
-
-    a = normalize_char(a)
-    b = normalize_char(b)
-
-    return (is_vowel(a) and is_vowel(b)) or (is_consonant(a) and is_consonant(b))
+    assert len(c) == 1, "Input must be a single character."
+    return unidecode(c)[0] in "bcdfghjklmnpqrstvwxyz"
 
 
 def categorize_char(c: str) -> str:
@@ -144,10 +112,8 @@ def categorize_char(c: str) -> str:
         return 1
     elif is_vowel(c):
         return 2
-    elif c == "'":
-        return 3
     else:
-        return 4
+        return 3  # NOTE: Unvoiced characters (only apostrophes are expected by default).
 
 
 def get_manhattan_distance(a: tuple[int], b: tuple[int]) -> int:
@@ -171,9 +137,9 @@ def basic_tokenizer(text: str) -> list:
     return list(re.finditer(rf"({NUMERIC_TOKEN})|({STANDARD_TOKEN})", text, re.UNICODE | re.VERBOSE))
 
 
-def basic_normalizer(text: str, lang: str = "en") -> str:
+def basic_normalizer(text: str) -> str:
     """
-    Default normalizer that converts text to lowercase and removes accents.
+    Default normalizer that only converts text to lowercase.
 
     Args:
         text (str): The input text to normalize.
@@ -181,16 +147,26 @@ def basic_normalizer(text: str, lang: str = "en") -> str:
     Returns:
         str: The normalized text.
     """
-
-    if bool(re.match(NUMERIC_TOKEN, text)):
-        if lang == "en":
-            text = text.replace(",", "")
-        else:
-            text = text.replace(".", "")
-            text = text.replace(",", ".")
-        try:
-            return num2words(text, lang=lang)
-        except Exception as e:
-            print(f"\nError converting number to words: {text}\n")
-
     return text.lower()
+
+
+def ensure_length_preservation(normalizer: callable) -> callable:
+    """
+    Decorator to ensure that the normalizer preserves the length of the input text.
+
+    Args:
+        normalizer (callable): The normalizer function to wrap.
+
+    Returns:
+        callable: The wrapped normalizer function that preserves length.
+    """
+
+    def wrapper(text: str, *args, **kwargs) -> str:
+        normalized = normalizer(text, *args, **kwargs)
+        if len(normalized) != len(text):
+            raise ValueError(
+                f"Normalizer must preserve length. Input length: {len(text)}, Output length: {len(normalized)}"
+            )
+        return normalized
+
+    return wrapper

@@ -38,11 +38,10 @@ def _get_optimal_word_alignment_values(ref_token: str, hyp_token: str):
     if hyp_token == ref_token:
         diag_cost = 0
     else:
-        diag_cost = Levenshtein.normalized_distance(ref_token, hyp_token)
-        assert 0 < diag_cost <= 1, "Diagonal cost should be between 0 and 1."
-        # diag_cost = Levenshtein.distance(ref_token, hyp_token) / len(ref_token)
+        diag_cost = Levenshtein.distance(ref_token, hyp_token, weights=(1, 1, 2))
+        diag_cost += abs(len(ref_token) - len(hyp_token))
 
-    return 1, 1, diag_cost
+    return len(hyp_token), len(ref_token), diag_cost
 
 
 def _get_error_align_values(ref_token: str, hyp_token: str):
@@ -98,20 +97,20 @@ def compute_distance_matrix(
     if backtrace:
         B = np.zeros((hyp_dim, ref_dim), dtype=int)
         B[0, 0] = OP_TYPE_COMBO_MAP_INV[(OpType.MATCH,)]  # start tokens always match
-        B[0, 1:] = OP_TYPE_COMBO_MAP_INV[(OpType.INSERT,)]  # implies horisontal step
-        B[1:, 0] = OP_TYPE_COMBO_MAP_INV[(OpType.DELETE,)]  # implies vertical step
+        B[0, 1:] = OP_TYPE_COMBO_MAP_INV[(OpType.DELETE,)]  # implies horisontal step
+        B[1:, 0] = OP_TYPE_COMBO_MAP_INV[(OpType.INSERT,)]  # implies vertical step
 
     # Fill in the score and backtrace matrix
     for j in range(1, ref_dim):
         for i in range(1, hyp_dim):
 
-            del_cost, ins_cost, diag_cost = score_func(ref[j - 1], hyp[i - 1])
+            ins_cost, del_cost, diag_cost = score_func(ref[j - 1], hyp[i - 1])
 
             # Compute the new value
-            del_val = D[i - 1, j] + del_cost
-            ins_val = D[i, j - 1] + ins_cost
+            ins_val = D[i - 1, j] + ins_cost
+            del_val = D[i, j - 1] + del_cost
             diag_val = D[i - 1, j - 1] + diag_cost
-            new_val = min(del_val, ins_val, diag_val)
+            new_val = min(ins_val, del_val, diag_val)
             D[i, j] = new_val
 
             # Track possible operations (note that the order of operations matters)
@@ -179,42 +178,3 @@ def compute_optimal_word_alignment_distance_matrix(ref: list[str], hyp: list[str
         np.ndarray: The backtrace matrix, if backtrace=True.
     """
     return compute_distance_matrix(ref, hyp, _get_optimal_word_alignment_values, backtrace, dtype=float)
-
-
-def get_optimal_alignment_trace(B, sample=False):
-    """
-    Find the edit operations from the backtrace matrix B.
-
-    Args:
-        B (np.ndarray): The backtrace matrix.
-        ref (list[str]|str): The reference sequence/transcript.
-        hyp (list[str]|str): The hypothesis sequence/transcript.
-        sample (bool): Whether to sample from the operation combinations or just use the first op deterministically.
-
-    Returns:
-        list: The list of operations.
-    """
-    i, j = B.shape[0] - 1, B.shape[1] - 1
-
-    alignment_trace = []
-    while i > 0 or j > 0:
-
-        ops = OP_TYPE_COMBO_MAP[B[i, j]]
-
-        if sample:
-            op_type = random.choice(ops)
-        else:
-            op_type = ops[0]
-
-        alignment_trace.append((op_type, (i - 1, j - 1)))
-
-        if op_type == OpType.MATCH:
-            i, j = i - 1, j - 1
-        elif op_type == OpType.INSERT:
-            j = j - 1
-        elif op_type == OpType.DELETE:
-            i = i - 1
-        elif op_type == OpType.SUBSTITUTE:
-            i, j = i - 1, j - 1
-
-    return alignment_trace[::-1]

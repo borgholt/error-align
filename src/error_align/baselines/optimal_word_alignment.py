@@ -1,5 +1,5 @@
 from error_align.edit_distance import compute_optimal_word_alignment_distance_matrix
-from error_align.optimal_alignment_graph import OptimalAlignmentGraph
+from error_align.backtrace_graph import BacktraceGraph
 from error_align.utils import (
     Alignment,
     basic_normalizer,
@@ -9,9 +9,7 @@ from error_align.utils import (
 
 
 class OptimalWordAlign:
-    """
-    Class to handle optimal word alignment in a sequence.
-    """
+    """Optimal word-level alignment based on global-to-local edits (GLE) metric."""
 
     def __init__(
         self,
@@ -20,8 +18,7 @@ class OptimalWordAlign:
         tokenizer: callable = basic_tokenizer,
         normalizer: callable = basic_normalizer,
     ):
-        """
-        Initialize the optimal word alignment with reference and hypothesis sequences.
+        """Initialize the optimal word-level alignment with reference and hypothesis texts.
 
         Args:
             ref (str): The reference sequence/transcript.
@@ -44,18 +41,17 @@ class OptimalWordAlign:
         self._hyp_max_idx = len(self._hyp) - 1
         self.end_index = (self._hyp_max_idx, self._ref_max_idx)
 
-        # Initialize the optimal alignment graph from the backtrace matrix.
+        # Extract backtrace graph.
         _, B = compute_optimal_word_alignment_distance_matrix(self._ref, self._hyp, backtrace=True)
-        self._optimal_alignment_graph = OptimalAlignmentGraph(B)
+        self._backtrace_graph = BacktraceGraph(B)
 
     def align(self) -> list[Alignment]:
-        """
-        Perform the optimal word alignment between the reference and hypothesis sequences.
+        """Extract an arbitrary path from the backtrace graph -- all paths are equal wrt. to the GLE metric.
 
         Returns:
-            list[Alignment]: A list of Alignment objects representing the optimal word alignment.
+            list[Alignment]: A list of Alignment objects.
         """
-        path = self._optimal_alignment_graph.get_path()
+        path = self._backtrace_graph.get_path()
         alignments = []
         for op_type, node in path:
             if op_type == OpType.MATCH or op_type == OpType.SUBSTITUTE:
@@ -64,32 +60,26 @@ class OptimalWordAlign:
                 alignment = Alignment(
                     op_type=op_type,
                     ref_slice=slice(*ref_match.span()),
-                    hyp_slice= slice(*hyp_match.span()),
+                    hyp_slice=slice(*hyp_match.span()),
                     ref=ref_match.group(),
                     hyp=hyp_match.group(),
-                    left_compound=False,
-                    right_compound=False,
                 )
-            elif op_type == OpType.INSERT:
+            elif op_type == OpType.DELETE:
                 ref_match = self._ref_token_matches[node.ref_idx - 1]
                 alignment = Alignment(
                     op_type=op_type,
                     ref_slice=slice(*ref_match.span()),
                     ref=ref_match.group(),
-                    left_compound=False,
-                    right_compound=False,
                 )
-            elif op_type == OpType.DELETE:
+            elif op_type == OpType.INSERT:
                 hyp_match = self._hyp_token_matches[node.hyp_idx - 1]
                 alignment = Alignment(
                     op_type=op_type,
                     hyp_slice=slice(*hyp_match.span()),
                     hyp=hyp_match.group(),
-                    left_compound=False,
-                    right_compound=False,
                 )
             else:
                 raise ValueError(f"Unknown operation type: {op_type}")
             alignments.append(alignment)
-        
+
         return alignments

@@ -6,7 +6,6 @@ from pathlib import Path
 from time import time
 from decimal import Decimal
 
-
 import click
 import numpy as np
 from datasets import Dataset
@@ -171,9 +170,9 @@ def compute_edits(alignments: list[Alignment], phoneme_converter: callable = Non
     for a in alignments:
         if a.op_type == OpType.MATCH:
             continue
-        if a.op_type == OpType.INSERT:
+        if a.op_type == OpType.DELETE:
             num_edits += len(normalize(a.ref))
-        elif a.op_type == OpType.DELETE:
+        elif a.op_type == OpType.INSERT:
             num_edits += len(normalize(a.hyp))
         elif a.op_type == OpType.SUBSTITUTE:
             nref = normalize(a.ref)
@@ -224,7 +223,12 @@ def evaluate_method(method: callable, ref: str, hyp: str, phoneme_converter: cal
     help="Beam width for beam search.",
     default=100,
 )
-def main(transcript_file: str, only_error_align: bool, beam_size: int):
+@click.option(
+    "--save_results",
+    help="Path to save the results.",
+    is_flag=True,
+)
+def main(transcript_file: str, only_error_align: bool, beam_size: int, save_results: bool):
     """Main function to evaluate the alignment algorithms."""
 
     # Validate input file and load dataset.
@@ -283,8 +287,7 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int):
                     metrics[method_name]["phoneme_edits"] += phoneme_edits
                 char_edits_all[method_name].append(char_edits)
         except AssertionError as e:
-            import IPython; IPython.embed(using=False)
-            assert method_name == "Power", "Unexpected method failure"
+            assert method_name == "Power", "Unexpected method failure: " + str(e)
             continue
 
         c_n += Levenshtein.distance(
@@ -327,10 +330,11 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int):
         print(f"p-value of Error vs {k}: {p_value_formatted}")
 
     # Dump metrics as json.
-    # results_dir = Path("results")
-    # results_dir.mkdir(exist_ok=True)
-    # with open(results_dir / f"{model_name}_{dataset_name}_{subset_name}_{language_code}.json", "w") as f:
-    #     json.dump(metrics, f, indent=4)
+    if save_results:
+        results_dir = Path("results")
+        results_dir.mkdir(exist_ok=True)
+        with open(results_dir / f"{model_name}_{dataset_name}_{subset_name}_{language_code}.json", "w") as f:
+            json.dump(metrics, f, indent=4)
 
 
 if __name__ == "__main__":
