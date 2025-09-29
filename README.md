@@ -76,7 +76,7 @@ __Notes and limitations:__
 ## Citation and Research
 
 ```
-@article{borgholt2021we,
+@article{borgholt2021alignment,
   title={A Text-To-Text Alignment Algorithm for Better Evaluation of Modern Speech Recognition Systems},
   author={Borgholt, Lasse and Havtorn, Jakob and Igel, Christian and Maal{\o}e, Lars and Tan, Zheng-Hua},
   journal={arXiv preprint arXiv:XXXX.XXXXX},
