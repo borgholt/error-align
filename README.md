@@ -46,16 +46,6 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 
-
-```python
-from error_align import error_align
-
-ref = "Some things are worth noting!"
-hyp = "Something worth nothing period?"
-
-alignments = error_align(ref, hyp)
-```
-
 ---
 
 <a name="wip">
@@ -75,6 +65,30 @@ alignments = error_align(ref, hyp)
 
 ### Citation and Research
 
-_Coming soon_
+```
+@article{borgholt2021we,
+  title={A Text-To-Text Alignment Algorithm for Better Evaluation of Modern Speech Recognition Systems},
+  author={Borgholt, Lasse and Havtorn, Jakob and Igel, Christian and Maal{\o}e, Lars and Tan, Zheng-Hua},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  year={2025}
+}
+```
+
+__To reproduce results from the paper:__
+- Install with extra evaluation dependencies:
+  - `pip install error-align[evaluation]`
+- Clone this repository:
+  - `git clone https://github.com/borgholt/error-align.git`
+- Navigate to the evaluation directory:
+  - `cd error-align/evaluation`
+- Transcribe a dataset for evaluation. For example:
+  - `python transcribe_dataset.py --model_name whisper --dataset_name commonvoice --language_code fr`
+- Run evaluation script on the output file. For example:
+  - `python evaluate_dataset.py --transcript_file transcribed_data/whisper_commonvoice_test_fr.parquet`
+
+__Notes:__
+- To reproduce results on the `primock57` dataset, first run: `python prepare_primock57.py`.
+- Use the `--help` flag to see all available options for `transcribe_dataset.py` and `evaluate_dataset.py`.
+- All results reported in the paper are based on the test sets.
 
 ---

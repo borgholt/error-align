@@ -247,12 +247,12 @@ def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = N
     "--subset_name",
     type=click.Choice(["train", "validation", "test"]),
     help="Subset of the dataset to use.",
-    required=True,
+    default="test",
 )
 @click.option(
     "--language_code",
     type=click.Choice(["en", "es", "pt", "fr", "de", "pl", "tr", "id", "vi", "sw"]),
-    help="Language code of the audio data.",
+    help="Language code of the audio data. Only `commonvoice` supports other languages than English.",
     default="en",
 )
 @click.option(
