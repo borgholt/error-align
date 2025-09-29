@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/core-features.svg?style=flat-square" alt="Coverage">
+  <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/main.svg?style=flat-square" alt="Coverage">
 </p>
 
 <br/>
