@@ -27,8 +27,10 @@ jobs:
 
       - name: Run tests with coverage
         run: pytest --cov=src/error_align --cov-report=xml
+        run: ls -la
 
       - name: Upload coverage to Codecov
+        run: ls -la
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
