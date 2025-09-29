@@ -152,7 +152,3 @@ evaluation/transcribed_data/
 evaluation/primock57/
 evaluation/results/
 evaluation/visualize/
-
-# Temp. dirs for Power Aligner baseline
-power/
-normalize/

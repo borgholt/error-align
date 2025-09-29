@@ -1,6 +1,11 @@
 <p align="center">
   <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="58%"/>
 </p>
+
+<p align="center">
+  <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/core-features.svg?style=flat-square" alt="Coverage">
+</p>
+
 <br/>
 
 **Text-to-text alignment algorithm for speech recognition error analysis.** ErrorAlign helps you dig deeper into your speech recognition projects by accurately aligning each word in a reference transcript with the model-generated transcript. Unlike traditional methods, such as Levenshtein-based alignment, it is not restricted to simple one-to-one alignment, but can map a single reference word to multiple words or subwords in the model output. This enables quick and reliable identification of error patterns in rare words, names, or domain-specific terms that matter most for your application.

@@ -54,6 +54,7 @@ pytest-cov = "^6.1.1"
 pytest-mock = "^3.14.0"
 requests = "^2.31.0"
 typeguard = "^4.4.2"
+coverage = "^7.10.7"
 
 [tool.poetry.extras]
 evaluation = [

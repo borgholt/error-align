@@ -1281,7 +1281,6 @@ files = [
     {file = "coverage-7.10.7-py3-none-any.whl", hash = "sha256:f7941f6f2fe6dd6807a1208737b8a0cbcf1cc6d7b07d24998ad2d63590868260"},
     {file = "coverage-7.10.7.tar.gz", hash = "sha256:f4ab143ab113be368a3e9b795f9cd7906c5ef407d6173fe9675a902e1fffc239"},
 ]
-markers = {main = "extra == \"evaluation\""}
 
 [package.extras]
 toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
@@ -4715,8 +4714,8 @@ files = [
 
 [package.dependencies]
 numpy = [
+    {version = ">=1.23.3", markers = "python_version >= \"3.11\""},
     {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
-    {version = ">=1.23.3", markers = "python_version == \"3.11\""},
 ]
 
 [package.extras]
@@ -6303,8 +6302,8 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
     {version = ">=1.23.2", markers = "python_version == \"3.11\""},
+    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -11373,4 +11372,4 @@ evaluation = ["backoff", "click", "datasets", "gitpython", "librosa", "matplotli
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "1eca0e3f546be2272fbb7c2fd419e2ecedc436a43dee7ac8c4d76120f2b385df"
+content-hash = "9898d1cf29baf9c37d4ceae8a690ba2ae265d019f4d5da068ec20cee660bc4fb"
