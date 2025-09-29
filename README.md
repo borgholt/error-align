@@ -5,28 +5,33 @@
 
 **Text-to-text alignment algorithm for speech recognition error analysis.** ErrorAlign helps you dig deeper into your speech recognition projects by accurately aligning each word in a reference transcript with the model-generated transcript. Unlike traditional methods, such as Levenshtein-based alignment, it is not restricted to simple one-to-one alignment, but can map a single reference word to multiple words or subwords in the model output. This enables quick and reliable identification of error patterns in rare words, names, or domain-specific terms that matter most for your application.
 
-### Table of Contents
+<br/>
+
+__Table of Contents:__
 - [Installation](#installation)
 - [Usage](#usage)
 - [Work-in-Progress](#wip)
 - [Citation and Research](#citation)
 
+<br/>
 
 
----
 
 <a name="installation">
 
-### Installation
+## Installation
 
 ```
 pip install error_align
 ```
----
+
+<br/>
+
+
 
 <a name="usage">
 
-### Usage
+## Usage
 ```python
 from error_align import error_align
 
@@ -46,11 +51,16 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 
----
+__Notes and limitations:__
+- The `error_align` function is not cummutative.
+- The algorithm only works for latin-script languages.
+
+<br/>
+
 
 <a name="wip">
 
-### Work-in-Progress
+## Work-in-Progress
 
 🚧 Optimization for longform text.
 
@@ -58,12 +68,12 @@ Alignment(INSERT: "period")
 
 🚧 C++ version with Python bindings.
 
+<br/>
 
----
 
 <a name="citation">
 
-### Citation and Research
+## Citation and Research
 
 ```
 @article{borgholt2021we,
@@ -90,5 +100,7 @@ __Notes:__
 - To reproduce results on the `primock57` dataset, first run: `python prepare_primock57.py`.
 - Use the `--help` flag to see all available options for `transcribe_dataset.py` and `evaluate_dataset.py`.
 - All results reported in the paper are based on the test sets.
+
+<br/>
 
 ---
