@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-import numpy as np
 import regex as re
 from tqdm import tqdm
 
@@ -82,11 +81,11 @@ class ErrorAlign:
             self._backtrace_graph = None
             self._backtrace_node_set = None
             self._unambiguous_matches = None
-            
+
     def __repr__(self):
         ref_preview = self.ref if len(self.ref) < 20 else self.ref[:17] + "..."
         hyp_preview = self.hyp if len(self.hyp) < 20 else self.hyp[:17] + "..."
-        return f"ErrorAlign(ref=\"{ref_preview}\", hyp=\"{hyp_preview}\")"
+        return f'ErrorAlign(ref="{ref_preview}", hyp="{hyp_preview}")'
 
     def align(self, beam_size: int = 100, pbar: bool = False, return_path: bool = False) -> list[Alignment]:
         """Perform beam search to align reference and hypothesis texts.
@@ -173,7 +172,7 @@ class ErrorAlign:
         The 'index_map' is used to map each aligned character back to its original position in the input text.
 
         NOTE: -1 is used for delimiter (<>) and indicates no match in the source sequence.
-        """    
+        """
         index_map = []
         for match in text_tokens:
             index_map.extend([-1])  # Start delimiter
@@ -315,7 +314,7 @@ class Path:
         Yields:
             Path: The expanded child paths.
         """
-        
+
         # Add delete operation
         delete_path = self._add_delete()
         if delete_path is not None:
@@ -391,7 +390,7 @@ class Path:
 
     def _add_delete(self):
         """Expand the path by adding a delete operation."""
-        
+
         # Ensure we are not at the end of the hypothesis sequence.
         if self.hyp_idx >= self.src._hyp_max_idx:
             return None
@@ -468,8 +467,8 @@ class Path:
 
         return new_path
 
-    def _translate_slice(self, segment_slice: slice, index_map: np.ndarray):
-        """Translate a slice from the aligned sequence back to the original sequence."""    
+    def _translate_slice(self, segment_slice: slice, index_map: list[int]) -> slice | None:
+        """Translate a slice from the aligned sequence back to the original sequence."""
         slice_indices = index_map[segment_slice]
         slice_indices = list(filter(lambda x: x >= 0, slice_indices))
         if len(slice_indices) == 0:
