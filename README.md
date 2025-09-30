@@ -98,6 +98,18 @@ __Notes:__
 - Use the `--help` flag to see all available options for `transcribe_dataset.py` and `evaluate_dataset.py`.
 - All results reported in the paper are based on the test sets.
 
+__Collaborators:__
+
+<br/>
+
+<div style="display: flex; align-items: center;">
+  <img src=".github/assets/corti.png" alt="Corti" height="75" style="margin-right: 50px;">
+  <img src=".github/assets/aau.png" alt="Aalborg Unversity" height="75" style="margin-right: 50px;">
+  <img src=".github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75" style="margin-right: 50px;">
+  <img src=".github/assets/dtu.png" alt="Technical University of Denmark" height="75" style="margin-right: 50px;">
+  <img src=".github/assets/ucph.png" alt="University of Copenhagen" height="75">
+</div>
+
 <br/>
 
 ---
