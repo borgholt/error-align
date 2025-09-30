@@ -17,5 +17,5 @@ jobs:
         uses: astral-sh/ruff-action@v3
         with:
           version: latest
-          args: "check --select ALL --exclude src/error_align/baselines"
+          args: "check"
           src: "."
