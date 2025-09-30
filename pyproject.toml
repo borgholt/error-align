@@ -1,16 +1,40 @@
 [tool.poetry]
-name = "python-package-template"
-version = "0"
-description = ""
-authors = ["Machine Learning R&D"]
+name = "error-align"
+version = "0.1.0b1"
+description = "Text-to-text alignment algorithm for speech recognition error analysis."
+authors = ["Lasse Borgholt"]
 readme = "README.md"
 
 packages = [
-    { include = 'python_package_template', from = 'src' },
+    { include = 'error_align', from = 'src' },
 ]
 
 [tool.poetry.dependencies]
+
+# Core dependencies
 python = ">=3.11,<3.13"
+regex = "^2024.11.6"
+tqdm = "^4.67.1"
+unidecode = "^1.4.0"
+
+# Extra dependencies
+rapidfuzz = { version = "^3.13.0", optional = true }
+num2words = { version = "^0.5.14", optional = true }
+datasets = { version = "^3.3.2", optional = true }
+soundfile = { version = "^0.13.1", optional = true }
+librosa = { version = "^0.11.0", optional = true }
+click = { version = "^8.2.1", optional = true }
+pandas = { version = "^2.3.1", optional = true }
+scipy = { version = "^1.16.1", optional = true }
+textgrid = { version = "^1.6.1", optional = true }
+nemo-toolkit = {extras = ["all"], version = "^2.4.0", optional = true}
+transformers = { version = "^4.51.3", optional = true }
+backoff = { version = "^2.2.1", optional = true }
+gitpython = { version = "^3.1.45", optional = true }
+pyphen = { version = "^0.17.2", optional = true }
+matplotlib = { version = "^3.10.6", optional = true }
+numpy = { version = ">=1.22,<2.0", optional = true }
+
 
 [tool.poetry.group.dev]
 optional = true
@@ -18,18 +42,37 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 ipython = "9.3.0"
 ruff = ">=0.1,<0.13"
+pre-commit = "^4.2.0"
 
 [tool.poetry.group.test]
 optional = true
 
 [tool.poetry.group.test.dependencies]
-pre-commit = "^4.2.0"
 pytest = ">=7.4.3,<9.0.0"
-pytest-azurepipelines = "^1.0.5"
 pytest-cov = "^6.1.1"
-pytest-mock = "^3.14.0"
-requests = "^2.31.0"
-typeguard = "^4.4.2"
+typeguard = "^4.4.4"
+
+
+[tool.poetry.extras]
+evaluation = [
+    "rapidfuzz",
+    "num2words",
+    "datasets",
+    "soundfile",
+    "librosa",
+    "click",
+    "pandas",
+    "scipy",
+    "textgrid",
+    "nemo-toolkit",
+    "transformers",
+    "backoff",
+    "gitpython",
+    "pyphen",
+    "matplotlib",
+    "numpy",
+]
+
 
 [build-system]
 requires = ["poetry-core"]

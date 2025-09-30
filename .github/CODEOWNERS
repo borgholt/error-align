@@ -1,5 +1,1 @@
-* @corticph/machine-learning-r-d
-
-# No owners of dependencies to allow @github-actions[bot] to approve and auto-merge dependabot PRs.
-pyproject.toml
-poetry.lock
+* @borgholt

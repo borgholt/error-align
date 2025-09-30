@@ -14,11 +14,10 @@ repos:
     -   id: end-of-file-fixer  # Ensure files end with a newline.
     -   id: trailing-whitespace  # Check for trailing whitespace.
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+    rev: v0.13.2
     hooks:
-    - id: ruff  # Check for Python file linting issues and fix them.
-      args: ["check", "--select", "I", "--fix"]
-    - id: ruff-format  # Format Python files.
+      - id: ruff-format
+      - id: ruff-check
 -   repo: https://github.com/asottile/yesqa
     rev: v1.5.0
     hooks:
@@ -29,8 +28,3 @@ repos:
     -   id: poetry-check  # Validate the pyproject.toml file.
     -   id: poetry-lock  # Lock dependencies on changes to the pyproject.toml.
     -   id: poetry-install  # Install dependencies from the lock file on checkout and merge.
-- repo: https://github.com/corticph/ml-pre-commit-hooks
-  rev: v0.2.0
-  hooks:
-  - id: update-readme-title
-  - id: update-readme-settings

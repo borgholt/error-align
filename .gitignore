@@ -146,3 +146,9 @@ tests/reports
 
 # MacOS
 .DS_Store
+
+# Data files generated for evaluation
+evaluation/transcribed_data/
+evaluation/primock57/
+evaluation/results/
+evaluation/visualize/

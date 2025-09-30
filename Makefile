@@ -15,21 +15,6 @@ install:  ## Install the package for development along with pre-commit hooks.
 	poetry install --with dev --with test
 	poetry run pre-commit install
 
-.PHONY: test
-test:  ## Run the tests with pytest and generate coverage reports.
-	poetry run pytest -vvs tests --typeguard-packages=src --junitxml=test-results.xml --cov --cov-report=xml \
-		--cov-report=html --cov-report=term
-
-.PHONY: pre-commit
-pre-commit:  ## Run the pre-commit hooks.
-	poetry run pre-commit run --all-files --verbose
-
-.PHONY: pre-commit-pipeline
-pre-commit-pipeline:  ## Run the pre-commit hooks for the pipeline.
-	for hook in ${PRE_COMMIT_HOOKS_IN_PIPELINE}; do \
-		poetry run pre-commit run $$hook --all-files --verbose; \
-	done
-
 .PHONY: clean
 clean:  ## Clean up the project directory removing __pycache__, .coverage, test results, etc.
 	find . -type d -name "__pycache__" | xargs rm -rf {};
