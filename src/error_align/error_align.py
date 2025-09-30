@@ -215,6 +215,8 @@ class Path:
         self._at_unambiguous_match_node = False
         self._last_end_index = (-1, -1)
         self._end_indices = tuple()
+        self._alignments = None
+        self._alignments_index = None
 
     def __repr__(self):
         return f"Path(({self.ref_idx}, {self.hyp_idx}), score={self.cost})"
@@ -222,6 +224,12 @@ class Path:
     @property
     def alignments(self):
         """Get the alignments of the path."""
+        
+        # Return cached alignments if available and the path has not changed.
+        if self._alignments is not None and self._alignments_index == self.index:
+            return self._alignments
+        
+        self._alignments_index = self.index
         alignments = []
         start_hyp, start_ref = (0, 0)
         for (end_hyp, end_ref), score in self._end_indices:
@@ -278,7 +286,10 @@ class Path:
                 alignments.append(alignment)
 
             start_hyp, start_ref = end_hyp, end_ref
-
+        
+        # Cache the computed alignments.
+        self._alignments = alignments
+        
         return alignments
 
     @property
@@ -350,8 +361,8 @@ class Path:
         self._last_end_index = index
         self._open_cost = 0
 
-    def _end_delete_segment(self, index: tuple[int, int]) -> None:
-        """End the current segment, if criteria for a deletion are met."""
+    def _end_insertion_segment(self, index: tuple[int, int]) -> None:
+        """End the current segment, if criteria for an insertion are met."""
         hyp_slice = slice(self._last_end_index[0] + 1, index[0] + 1)
         hyp_slice = self._translate_slice(hyp_slice, self.src._hyp_index_map)
         ref_is_empty = index[1] == self._last_end_index[1]
@@ -404,7 +415,7 @@ class Path:
 
         # Check for end-of-segment criteria.
         if self.src._hyp[new_path.hyp_idx] == END_DELIMITER:
-            new_path._end_delete_segment(new_path.index)
+            new_path._end_insertion_segment(new_path.index)
 
         return new_path
 
@@ -418,7 +429,7 @@ class Path:
         # Transition and check for end-of-segment criteria.
         new_path = self._transition_and_shallow_copy(ref_step=1, hyp_step=0)
         if self.src._ref[new_path.ref_idx] == START_DELIMITER:
-            new_path._end_delete_segment(self.index)
+            new_path._end_insertion_segment(self.index)
 
         # Update costs.
         is_backtrace = self._in_backtrace_node_set(self.index)
@@ -450,7 +461,7 @@ class Path:
 
         # Check for end-of-segment criteria.
         if self.src._ref[new_path.ref_idx] == START_DELIMITER:
-            new_path._end_delete_segment(self.index)
+            new_path._end_insertion_segment(self.index)
 
         # Update costs, if not a match.
         if not is_match:

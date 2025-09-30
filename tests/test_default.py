@@ -6,7 +6,7 @@ def test_error_align() -> None:
     """Test error alignment for an example including all substitution types."""
 
     ref = "This is a substitution test deleted."
-    hyp = "Inserted this is a inclusion test."
+    hyp = "Inserted this is a contribution test."
 
     alignments = error_align(ref, hyp)
     expected_ops = [
@@ -14,7 +14,7 @@ def test_error_align() -> None:
         OpType.MATCH,  # This
         OpType.MATCH,  # is
         OpType.MATCH,  # a
-        OpType.SUBSTITUTE,  # inclusion -> substitution
+        OpType.SUBSTITUTE,  # contribution -> substitution
         OpType.MATCH,  # test
         OpType.DELETE,  # deleted
     ]
