@@ -1,5 +1,5 @@
-from error_align.error_align import ErrorAlign as ErrorAlign
-from error_align.func import error_align as error_align
+from error_align.error_align import ErrorAlign  # noqa: F401
+from error_align.func import error_align  # noqa: F401
 
 try:
     from error_align import baselines as baselines
