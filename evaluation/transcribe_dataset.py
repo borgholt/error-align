@@ -1,3 +1,6 @@
+import contextlib
+import os
+import warnings
 from pathlib import Path
 
 import click
@@ -6,19 +9,16 @@ import nemo.collections.asr as nemo_asr
 import numpy as np
 import torch
 from datasets import Dataset, load_dataset
-from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig, WhisperForConditionalGeneration
 from tqdm import tqdm
+from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig, WhisperForConditionalGeneration
 
-import warnings
-import os
-import contextlib
 
 @contextlib.contextmanager
 def suppress_all_output():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")  # suppress warnings
 
-        with open(os.devnull, 'w') as devnull:
+        with open(os.devnull, "w") as devnull:
             with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
                 # Optionally suppress tqdm progress bars
                 try:
@@ -31,7 +31,7 @@ def suppress_all_output():
                     yield
                 finally:
                     # Restore tqdm
-                    if hasattr(tqdm, '__tqdm_original__'):
+                    if hasattr(tqdm, "__tqdm_original__"):
                         tqdm.tqdm = tqdm.__tqdm_original__
 
 
@@ -57,14 +57,13 @@ class Phi4MultimodalInstuct:
 
     def transcribe(self, example: dict):
         """Transcribe audio from an Huggingface dataset example."""
-
         # Get audio data.
         audio = example["audio"]["array"]
         sampling_rate = example["audio"]["sampling_rate"]
 
         # Preprocess data, run model, and decode response.
         if len(audio) < 400:
-            audio = np.pad(audio, (0, 400 - len(audio)), mode='constant')
+            audio = np.pad(audio, (0, 400 - len(audio)), mode="constant")
         inputs = self.processor(
             text=self.prompt,
             audios=[(audio, sampling_rate)],
@@ -101,13 +100,12 @@ class WhisperLargeV3:
         self.generation_config.return_timestamps = True
         self.generation_config.forced_decoder_ids = self.processor.get_decoder_prompt_ids(
             language=language_code,
-            task="transcribe"
+            task="transcribe",
         )
         self.language_code = language_code
 
     def transcribe(self, example: dict):
         """Transcribe audio from an Huggingface dataset example."""
-
         # Get audio data.
         audio = example["audio"]["array"]
         sampling_rate = example["audio"]["sampling_rate"]
@@ -141,7 +139,6 @@ class ParakeetTDTV2:
 
     def transcribe(self, example: dict):
         """Transcribe audio from an Huggingface dataset example."""
-
         # Get audio data.
         audio = example["audio"]["array"]
         sampling_rate = example["audio"]["sampling_rate"]
@@ -152,7 +149,7 @@ class ParakeetTDTV2:
 
         # Pad to minimum length = 257.
         if len(audio) < 257:
-            audio = np.pad(audio, (0, 257 - len(audio)), mode='constant')
+            audio = np.pad(audio, (0, 257 - len(audio)), mode="constant")
 
         # Run the model to get transcription
         with suppress_all_output():
@@ -169,7 +166,6 @@ class ParakeetCTC:
 
     def transcribe(self, example: dict):
         """Transcribe audio from an Huggingface dataset example."""
-
         # Get audio data.
         audio = example["audio"]["array"]
         sampling_rate = example["audio"]["sampling_rate"]
@@ -180,7 +176,7 @@ class ParakeetCTC:
 
         # Pad to minimum length = 257.
         if len(audio) < 257:
-            audio = np.pad(audio, (0, 257 - len(audio)), mode='constant')
+            audio = np.pad(audio, (0, 257 - len(audio)), mode="constant")
 
         # Run the model to get transcription
         with suppress_all_output():
@@ -203,7 +199,6 @@ def load_model(model_name: str, language_code: str = "en"):
 
 def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = None):
     """Load a dataset in Hugging Face format."""
-
     # Check if the dataset is supported and load it accordingly.
     if dataset_name == "commonvoice":
         dataset = load_dataset("mozilla-foundation/common_voice_17_0", language_code)
@@ -258,12 +253,11 @@ def load_hf_dataset(dataset_name: str, language_code: str, primock_path: str = N
 @click.option(
     "--primock_path",
     type=str,
-    help="Local path to the PriMock57 git repository. If None, will clone the repository in the 'evaluation' directory.",
+    help="Local path to the PriMock57 git repo. If None, will clone the repository in the 'evaluation' directory.",
     default=None,
 )
 def main(model_name: str, dataset_name: str, subset_name: str, language_code: str, primock_path: str = None):
     """Main function to load the model and process data."""
-
     model = load_model(model_name, language_code=language_code)
     dataset = load_hf_dataset(dataset_name, language_code, primock_path)[subset_name]
 
@@ -278,7 +272,7 @@ def main(model_name: str, dataset_name: str, subset_name: str, language_code: st
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{model_name}_{dataset_name}_{subset_name}_{language_code}.parquet"
     transcribed_dataset.to_parquet(output_path.as_posix())
-    
+
 
 
 if __name__ == "__main__":

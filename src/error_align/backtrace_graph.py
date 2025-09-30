@@ -1,7 +1,7 @@
 import random
 from collections import Counter
 
-from error_align.utils import OpType, OP_TYPE_COMBO_MAP
+from error_align.utils import OP_TYPE_COMBO_MAP, OpType
 
 
 class Node:
@@ -9,7 +9,6 @@ class Node:
 
     def __init__(self, hyp_idx, ref_idx) -> None:
         """Initialize the node at index (i, j)."""
-
         self.hyp_idx = hyp_idx
         self.ref_idx = ref_idx
         self.children = {}
@@ -35,6 +34,7 @@ class Node:
 
         Returns:
             tuple[int, int]: The offset index of the node in the backtrace matrix.
+
         """
         return (self.hyp_idx - 1, self.ref_idx - 1)
 
@@ -47,6 +47,7 @@ class Node:
 
         Args:
             op_type (OpType): The operation type to check.
+
         """
         if op_type not in self.parents:
             return 0
@@ -57,6 +58,7 @@ class Node:
 
         Args:
             op_type (OpType): The operation type to check.
+
         """
         if op_type not in self.children:
             return 0
@@ -76,14 +78,13 @@ class Node:
 class BacktraceGraph:
     """Backtrace alignment graph."""
 
-    def __init__(self, B) -> None:
+    def __init__(self, backtrace_matrix: list[list[int]]) -> None:
         """Create a graph from the backtrace matrix."""
-
-        self.hyp_dim = len(B) # B.shape[0]
-        self.ref_dim = len(B[0]) # B.shape[1]
+        self.hyp_dim = len(backtrace_matrix) # B.shape[0]
+        self.ref_dim = len(backtrace_matrix[0]) # B.shape[1]
         self.hyp_max_idx = self.hyp_dim - 1
         self.ref_max_idx = self.ref_dim - 1
-        self.B = B
+        self.backtrace_matrix = backtrace_matrix
 
         self._nodes = None
 
@@ -93,6 +94,7 @@ class BacktraceGraph:
 
         Returns:
             dict: A dictionary of nodes indexed by their (hyp_idx, ref_idx).
+
         """
         if self._nodes is None:
             terminal_node = Node(self.hyp_max_idx, self.ref_max_idx)
@@ -115,6 +117,7 @@ class BacktraceGraph:
 
         Returns:
             int: The number of paths.
+
         """
         return self.get_node(0, 0)._bwd_node_count
 
@@ -124,6 +127,7 @@ class BacktraceGraph:
         Args:
             hyp_idx (int): Hyp/row index.
             ref_idx (int): Ref/column index.
+
         """
         return self.nodes[(hyp_idx, ref_idx)]
 
@@ -132,6 +136,7 @@ class BacktraceGraph:
 
         Returns:
             set: A set of all node indices.
+
         """
         transitions = set()
         for node in self.nodes.values():
@@ -147,6 +152,7 @@ class BacktraceGraph:
 
         Returns:
             list[Node]: A list of nodes representing the path.
+
         """
         node = self.get_node(0, 0)
         assert node.is_root, "The node at (-1, -1) was expected to be a root node."
@@ -167,6 +173,7 @@ class BacktraceGraph:
 
         Returns:
             list[Node]: A list of nodes representing the unambiguous path.
+
         """
         ref = "*" + ref  # Index offset
         mono_match_end_nodes = set()
@@ -215,7 +222,7 @@ class BacktraceGraph:
 
         assert node is not None, f"Node at index {index} does not exist in the graph."
 
-        op_type_combo_code = self.B[node.hyp_idx][node.ref_idx] # [node.index]
+        op_type_combo_code = self.backtrace_matrix[node.hyp_idx][node.ref_idx] # [node.index]
         op_type_combo = OP_TYPE_COMBO_MAP[op_type_combo_code]
 
         for op_type in op_type_combo:
@@ -225,7 +232,6 @@ class BacktraceGraph:
 
     def _set_path_and_node_counts(self):
         """Count the number of paths going through any node in the graph using the forward-backward algorithm."""
-
         ordered_nodes = list(self.nodes.values())
         root_node = ordered_nodes[0]
         terminal_node = ordered_nodes[-1]

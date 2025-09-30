@@ -2,9 +2,9 @@ from rapidfuzz.distance import Levenshtein
 
 from error_align.utils import (
     Alignment,
+    OpType,
     basic_normalizer,
     basic_tokenizer,
-    OpType,
 )
 
 OPS_MAP = {

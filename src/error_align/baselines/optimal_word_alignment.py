@@ -1,12 +1,12 @@
 from rapidfuzz.distance import Levenshtein
 
-from error_align.edit_distance import compute_distance_matrix
 from error_align.backtrace_graph import BacktraceGraph
+from error_align.edit_distance import compute_distance_matrix
 from error_align.utils import (
     Alignment,
+    OpType,
     basic_normalizer,
     basic_tokenizer,
-    OpType,
 )
 
 

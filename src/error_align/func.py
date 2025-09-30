@@ -1,6 +1,5 @@
-from typing import Union
 
-from error_align.error_align import ErrorAlign, Path  # noqa: F401
+from error_align.error_align import ErrorAlign, Path
 from error_align.utils import Alignment, basic_normalizer, basic_tokenizer
 
 
@@ -12,9 +11,8 @@ def error_align(
     beam_size: int = 100,
     pbar: bool = False,
     return_path: bool = False,
-) -> Union[list[Alignment], Path]:
-    """
-    Perform error alignment between two sequences.
+) -> list[Alignment] | Path:
+    """Perform error alignment between two sequences.
 
     Args:
         ref (str): The reference sequence/transcript.
@@ -27,6 +25,7 @@ def error_align(
     Returns:
         list[tuple[str, str, OpType]]: A list of tuples containing aligned reference token,
                                         hypothesis token, and the operation type.
+
     """
     return ErrorAlign(
         ref,

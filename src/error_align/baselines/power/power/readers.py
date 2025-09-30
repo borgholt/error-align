@@ -1,6 +1,8 @@
-import sys
 import json
+import sys
+
 from error_align.baselines.power.power.levenshtein import ExpandedAlignment
+
 
 class AlignmentReaderJson(object):
 	def __init__(self, filepath):

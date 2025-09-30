@@ -1,8 +1,9 @@
 from __future__ import division
-from collections import deque
-from error_align.baselines.power.power.levenshtein import Levenshtein, ExpandedAlignment, AlignLabels
+
+from error_align.baselines.power.power.levenshtein import AlignLabels, ExpandedAlignment, Levenshtein
 from error_align.baselines.power.power.phonemes import Phonemes
-from error_align.baselines.power.power.pronounce import PronouncerType, PronouncerBase, PronouncerLex
+from error_align.baselines.power.power.pronounce import PronouncerBase, PronouncerLex, PronouncerType
+
 
 class TokType:
     WordBoundary = 1

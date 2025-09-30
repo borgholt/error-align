@@ -1,7 +1,9 @@
-from error_align.baselines.power.power.levenshtein import ExpandedAlignment, AlignLabels
-from error_align.baselines.power.power.aligner import CharToWordAligner
-import re
 import copy
+import re
+
+from error_align.baselines.power.power.aligner import CharToWordAligner
+from error_align.baselines.power.power.levenshtein import AlignLabels
+
 
 class PunctInsertOracle(object):
     '''
@@ -155,7 +157,7 @@ class PunctInsertOracle(object):
                             
                         error_alignment_punct.s2[err_align_index] = "{1}{0}{2}".format(error_alignment_punct.s2[err_align_index], punct_lhs, punct_rhs)
 
-        except Exception as e:
+        except Exception:
             # TODO: Add exception handling to output the sentences as well as the offending segment.
             raise
         

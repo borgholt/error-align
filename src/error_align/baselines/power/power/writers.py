@@ -1,6 +1,8 @@
 from __future__ import division
+
 import abc
 import json
+
 from error_align.baselines.power.power.levenshtein import Levenshtein
 
 

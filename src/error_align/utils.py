@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from enum import IntEnum
-from itertools import chain
-from itertools import combinations
-
-from unidecode import unidecode
+from itertools import chain, combinations
 
 import regex as re
+from unidecode import unidecode
 
 
 class OpType(IntEnum):
@@ -39,20 +37,19 @@ class Alignment:
         rc = "-" if self.right_compound else ""
         if self.op_type == OpType.DELETE:
             return f'Alignment({self.op_type.name}: "{self.ref}")'
-        elif self.op_type == OpType.INSERT:
+        if self.op_type == OpType.INSERT:
             return f'Alignment({self.op_type.name}: "{self.hyp_with_compound_markers}")'
-        elif self.op_type == OpType.SUBSTITUTE:
+        if self.op_type == OpType.SUBSTITUTE:
             return f'Alignment({self.op_type.name}: "{self.ref}" -> {lc}"{self.hyp}"{rc})'
-        else:
-            return f'Alignment({self.op_type.name}: "{self.ref}" == {lc}"{self.hyp}"{rc})'
+        return f'Alignment({self.op_type.name}: "{self.ref}" == {lc}"{self.hyp}"{rc})'
 
 
 def op_type_powerset():
-    """
-    Generate all possible combinations of operation types, except the empty set.
+    """Generate all possible combinations of operation types, except the empty set.
 
     Returns:
         Generator: All possible combinations of operation types.
+
     """
     op_types = list(OpType)
     op_combinations = [combinations(op_types, r) for r in range(1, len(op_types) + 1)]
@@ -79,6 +76,7 @@ def is_vowel(c: str) -> bool:
 
     Returns:
         bool: True if the character is a vowel, False otherwise.
+
     """
     assert len(c) == 1, "Input must be a single character."
     return unidecode(c)[0] in "aeiouy"
@@ -89,84 +87,80 @@ def is_consonant(c: str) -> bool:
 
     Args:
         c (str): The character to check.
+
     Returns:
         bool: True if the character is a consonant, False otherwise.
+
     """
     assert len(c) == 1, "Input must be a single character."
     return unidecode(c)[0] in "bcdfghjklmnpqrstvwxyz"
 
 
 def categorize_char(c: str) -> int:
-    """
-    Categorize a character as 'vowel', 'consonant', or 'unvoiced'.
+    """Categorize a character as 'vowel', 'consonant', or 'unvoiced'.
 
     Args:
         c (str): The character to categorize.
 
     Returns:
         str: The category of the character.
+
     """
     if c in DELIMITERS:
         return 0
-    elif is_consonant(c):
+    if is_consonant(c):
         return 1
-    elif is_vowel(c):
+    if is_vowel(c):
         return 2
-    else:
-        return 3  # NOTE: Unvoiced characters (only apostrophes are expected by default).
+    return 3  # NOTE: Unvoiced characters (only apostrophes are expected by default).
 
 
 def get_manhattan_distance(a: tuple[int, int], b: tuple[int, int]) -> int:
-    """
-    Calculate the Manhattan distance between two points a and b.
-    """
+    """Calculate the Manhattan distance between two points a and b."""
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
 def basic_tokenizer(text: str) -> list:
-    """
-    Default tokenizer that splits text into words based on whitespace.
+    """Default tokenizer that splits text into words based on whitespace.
 
     Args:
         text (str): The input text to tokenize.
 
     Returns:
         list: A list of tokens (words).
-    """
 
+    """
     return list(re.finditer(rf"({NUMERIC_TOKEN})|({STANDARD_TOKEN})", text, re.UNICODE | re.VERBOSE))
 
 
 def basic_normalizer(text: str) -> str:
-    """
-    Default normalizer that only converts text to lowercase.
+    """Default normalizer that only converts text to lowercase.
 
     Args:
         text (str): The input text to normalize.
 
     Returns:
         str: The normalized text.
+
     """
     return text.lower()
 
 
 def ensure_length_preservation(normalizer: callable) -> callable:
-    """
-    Decorator to ensure that the normalizer preserves the length of the input text.
+    """Decorator to ensure that the normalizer preserves the length of the input text.
 
     Args:
         normalizer (callable): The normalizer function to wrap.
 
     Returns:
         callable: The wrapped normalizer function that preserves length.
+
     """
 
-    def wrapper(text: str, *args, **kwargs) -> str:
+    def wrapper(text: str, *args: list, **kwargs: dict) -> str:
         normalized = normalizer(text, *args, **kwargs)
         if len(normalized) != len(text):
-            raise ValueError(
-                f"Normalizer must preserve length. Input length: {len(text)}, Output length: {len(normalized)}"
-            )
+            raise ValueError("Normalizer must preserve length.")
         return normalized
 
     return wrapper

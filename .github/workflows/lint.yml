@@ -1,0 +1,21 @@
+name: Lint with Ruff
+
+on:
+  pull_request:
+  push:
+    branches:
+      - core-features
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          version: latest
+          args: "check --select ALL --exclude src/error_align/baselines"
+          src: "."

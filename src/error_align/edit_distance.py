@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from error_align.utils import DELIMITERS, OpType, OP_TYPE_COMBO_MAP_INV
+from error_align.utils import DELIMITERS, OP_TYPE_COMBO_MAP_INV, OpType
 
 
 def _get_levenshtein_values(ref_token: str, hyp_token: str):
@@ -11,6 +10,7 @@ def _get_levenshtein_values(ref_token: str, hyp_token: str):
 
     Returns:
         tuple: A tuple containing the deletion cost, insertion cost, and diagonal cost.
+
     """
     if hyp_token == ref_token:
         diag_cost = 0
@@ -29,6 +29,7 @@ def _get_error_align_values(ref_token: str, hyp_token: str):
 
     Returns:
         tuple: A tuple containing the deletion cost, insertion cost, and diagonal cost.
+
     """
     if hyp_token == ref_token:
         diag_cost = 0
@@ -39,7 +40,7 @@ def _get_error_align_values(ref_token: str, hyp_token: str):
 
     return 1, 1, diag_cost
 
-    
+
 def compute_distance_matrix(
     ref: str | list[str],
     hyp: str | list[str],
@@ -47,8 +48,7 @@ def compute_distance_matrix(
     backtrace: bool = False,
     dtype: type = int,
 ):
-    """
-    Compute the edit distance score matrix between two sequences x (hyp) and y (ref)
+    """Compute the edit distance score matrix between two sequences x (hyp) and y (ref)
     using only pure Python lists.
 
     Args:
@@ -62,37 +62,37 @@ def compute_distance_matrix(
     Returns:
         list[list]: The score matrix.
         list[list]: The backtrace matrix, if backtrace=True.
-    """
 
+    """
     hyp_dim, ref_dim = len(hyp) + 1, len(ref) + 1
 
     # Create empty score matrix of zeros and initialize first row and column.
-    D = [[dtype(0) for _ in range(ref_dim)] for _ in range(hyp_dim)]
+    score_matrix = [[dtype(0) for _ in range(ref_dim)] for _ in range(hyp_dim)]
     for j in range(ref_dim):
-        D[0][j] = dtype(j)
+        score_matrix[0][j] = dtype(j)
     for i in range(hyp_dim):
-        D[i][0] = dtype(i)
+        score_matrix[i][0] = dtype(i)
 
     # Create backtrace matrix and operation combination map and initialize first row and column.
     # Each operation combination is dynamically assigned a unique integer.
     if backtrace:
-        B = [[0 for _ in range(ref_dim)] for _ in range(hyp_dim)]
-        B[0][0] = OP_TYPE_COMBO_MAP_INV[(OpType.MATCH,)]
+        backtrace_matrix = [[0 for _ in range(ref_dim)] for _ in range(hyp_dim)]
+        backtrace_matrix[0][0] = OP_TYPE_COMBO_MAP_INV[(OpType.MATCH,)]
         for j in range(1, ref_dim):
-            B[0][j] = OP_TYPE_COMBO_MAP_INV[(OpType.DELETE,)]
+            backtrace_matrix[0][j] = OP_TYPE_COMBO_MAP_INV[(OpType.DELETE,)]
         for i in range(1, hyp_dim):
-            B[i][0] = OP_TYPE_COMBO_MAP_INV[(OpType.INSERT,)]
+            backtrace_matrix[i][0] = OP_TYPE_COMBO_MAP_INV[(OpType.INSERT,)]
 
     # Fill in the score and backtrace matrix.
     for j in range(1, ref_dim):
         for i in range(1, hyp_dim):
             ins_cost, del_cost, diag_cost = score_func(ref[j - 1], hyp[i - 1])
 
-            ins_val = D[i - 1][j] + ins_cost
-            del_val = D[i][j - 1] + del_cost
-            diag_val = D[i - 1][j - 1] + diag_cost
+            ins_val = score_matrix[i - 1][j] + ins_cost
+            del_val = score_matrix[i][j - 1] + del_cost
+            diag_val = score_matrix[i - 1][j - 1] + diag_cost
             new_val = min(ins_val, del_val, diag_val)
-            D[i][j] = dtype(new_val)
+            score_matrix[i][j] = dtype(new_val)
 
             # Track possible operations (note that the order of operations matters).
             if backtrace:
@@ -105,17 +105,15 @@ def compute_distance_matrix(
                     pos_ops += (OpType.DELETE,)
                 if diag_val == new_val and diag_cost > 0:
                     pos_ops += (OpType.SUBSTITUTE,)
-                B[i][j] = OP_TYPE_COMBO_MAP_INV[pos_ops]
+                backtrace_matrix[i][j] = OP_TYPE_COMBO_MAP_INV[pos_ops]
 
     if backtrace:
-        return D, B
-    else:
-        return D
+        return score_matrix, backtrace_matrix
+    return score_matrix
 
 
 def compute_levenshtein_distance_matrix(ref: str | list[str], hyp: str | list[str], backtrace: bool = False):
-    """
-    Compute the Levenshtein distance matrix between two sequences.
+    """Compute the Levenshtein distance matrix between two sequences.
 
     Args:
         ref (str): The reference sequence/transcript.
@@ -125,13 +123,13 @@ def compute_levenshtein_distance_matrix(ref: str | list[str], hyp: str | list[st
     Returns:
         np.ndarray: The score matrix.
         np.ndarray: The backtrace matrix, if backtrace=True.
+
     """
     return compute_distance_matrix(ref, hyp, _get_levenshtein_values, backtrace)
 
 
 def compute_error_align_distance_matrix(ref: str | list[str], hyp: str | list[str], backtrace: bool = False):
-    """
-    Compute the error alignment distance matrix between two sequences.
+    """Compute the error alignment distance matrix between two sequences.
 
     Args:
         ref (str): The reference sequence/transcript.
@@ -141,5 +139,6 @@ def compute_error_align_distance_matrix(ref: str | list[str], hyp: str | list[st
     Returns:
         np.ndarray: The score matrix.
         np.ndarray: The backtrace matrix, if backtrace=True.
+
     """
     return compute_distance_matrix(ref, hyp, _get_error_align_values, backtrace)

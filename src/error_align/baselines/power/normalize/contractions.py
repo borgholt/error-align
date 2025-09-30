@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 class ContractionsEng(object):
     @staticmethod
     def isContraction(word):

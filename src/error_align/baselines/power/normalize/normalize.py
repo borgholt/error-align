@@ -1,10 +1,10 @@
-from error_align.baselines.power.normalize import NumToTextEng, TextToNumEng
-from error_align.baselines.power.normalize import ContractionsEng
-from error_align.baselines.power.power.levenshtein import ExpandedAlignment
-import re
-from collections import defaultdict
 import itertools
+import re
 import string
+from collections import defaultdict
+
+from error_align.baselines.power.normalize import ContractionsEng, NumToTextEng, TextToNumEng
+
 
 def splitHyphens(text):
     return [x for x in re.split('[ -]', text) if x]

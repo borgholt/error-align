@@ -5,11 +5,13 @@ Created on Mar 30, 2015
 Assuming you have a file of word sequences, this processes them through Festival to generate pronunciations.
 
 '''
-import sys
 import json
 from itertools import groupby
-from error_align.baselines.power.normalize import NumToTextEng, splitHyphens
+
 import pyphen
+
+from error_align.baselines.power.normalize import NumToTextEng, splitHyphens
+
 
 class PronouncerType:
     Base = "base"

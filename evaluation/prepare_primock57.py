@@ -17,7 +17,6 @@ def save_audio_segments_and_create_metadata(
     session: str,
 ) -> list:
     """Save audio segments and create metadata for the PriMock57 dataset."""
-
     # Read audio file and transcript
     audio, sampling_rate = sf.read(audio_path, dtype="int16")
     transcript_textgrid = TextGrid.fromFile(transcript_path)
@@ -43,7 +42,7 @@ def save_audio_segments_and_create_metadata(
                 "id": session_segment,
                 "file_name": segment_filename,
                 "ref": interval.mark.strip(),
-            }
+            },
         )
 
     return example_metadata
@@ -64,7 +63,6 @@ def save_audio_segments_and_create_metadata(
 )
 def main(primock_path: str | None = None, output_path: str | None = None):
     """Main function to process the PriMock57 dataset."""
-
     # If no path is provided, clone the repository
     if primock_path is None:
         repo_url = "https://github.com/babylonhealth/primock57.git"

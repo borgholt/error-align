@@ -4,18 +4,18 @@ from typing import Union
 import regex as re
 from tqdm import tqdm
 
-from error_align.edit_distance import compute_error_align_distance_matrix
 from error_align.backtrace_graph import BacktraceGraph
+from error_align.edit_distance import compute_error_align_distance_matrix
 from error_align.utils import (
+    END_DELIMITER,
+    START_DELIMITER,
     Alignment,
+    OpType,
     basic_normalizer,
     basic_tokenizer,
     categorize_char,
     ensure_length_preservation,
     get_manhattan_distance,
-    OpType,
-    START_DELIMITER,
-    END_DELIMITER,
 )
 
 
@@ -40,6 +40,7 @@ class ErrorAlign:
             hyp (str): The hypothesis sequence/transcript.
             tokenizer (callable): A function to tokenize the sequences. Must be regex-based and return Match objects.
             normalizer (callable): A function to normalize the tokens. Defaults to basic_normalizer.
+
         """
         if not isinstance(ref, str):
             raise TypeError("Reference sequence must be a string.")
@@ -74,8 +75,8 @@ class ErrorAlign:
 
         # First pass: Extract backtrace graph.
         if not self._identical_inputs:
-            _, B = compute_error_align_distance_matrix(self._ref, self._hyp, backtrace=True)
-            self._backtrace_graph = BacktraceGraph(B)
+            _, backtrace_matrix = compute_error_align_distance_matrix(self._ref, self._hyp, backtrace=True)
+            self._backtrace_graph = BacktraceGraph(backtrace_matrix)
             self._backtrace_node_set = self._backtrace_graph.get_node_set()
             self._unambiguous_matches = self._backtrace_graph.get_unambiguous_matches(self._ref)
         else:
@@ -103,15 +104,15 @@ class ErrorAlign:
 
         Returns:
             list[Alignment]: A list of Alignment objects.
-        """
 
+        """
         # Skip beam search if inputs are identical.
         if self._identical_inputs:
             return self._identical_input_alignments()
 
         # Initialize the beam with a single path starting at the root node.
         start_path = Path(self)
-        beam = {start_path.ID: start_path}
+        beam = {start_path.pid: start_path}
         prune_map = defaultdict(lambda: float("inf"))
         ended = []
 
@@ -133,15 +134,13 @@ class ErrorAlign:
                 # Transition to all child nodes.
                 for new_path in path.expand():
 
-                    if new_path.ID in prune_map:
-                        if new_path.cost > prune_map[new_path.ID]:
+                    if new_path.pid in prune_map:
+                        if new_path.cost > prune_map[new_path.pid]:
                             continue
-                    prune_map[new_path.ID] = new_path.cost
+                    prune_map[new_path.pid] = new_path.cost
 
-                    if new_path.ID not in new_beam:
-                        new_beam[new_path.ID] = new_path
-                    elif new_path.cost < new_beam[new_path.ID].cost:
-                        new_beam[new_path.ID] = new_path
+                    if new_path.pid not in new_beam or new_path.cost < new_beam[new_path.pid].cost:
+                        new_beam[new_path.pid] = new_path
 
             # Update the beam with the newly expanded paths.
             new_beam = list(new_beam.values())
@@ -152,7 +151,7 @@ class ErrorAlign:
             if len(beam) > 0 and beam[0]._at_unambiguous_match_node:
                 beam = beam[:1]
                 prune_map = defaultdict(lambda: float("inf"))
-            beam = {p.ID: p for p in beam}  # Convert to dict for diversity check.
+            beam = {p.pid: p for p in beam}  # Convert to dict for diversity check.
 
             # Update progress bar, if enabled.
             try:
@@ -188,11 +187,10 @@ class ErrorAlign:
 
     def _identical_input_alignments(self) -> list[Alignment]:
         """Return alignments for identical reference and hypothesis pairs."""
-
         assert self._identical_inputs, "Inputs are not identical."
 
         alignments = []
-        for ref_match, hyp_match in zip(self._ref_token_matches, self._hyp_token_matches):
+        for ref_match, hyp_match in zip(self._ref_token_matches, self._hyp_token_matches, strict=False):
             ref_slice = slice(*ref_match.span())
             hyp_slice = slice(*hyp_match.span())
             ref_token = self.ref[ref_slice]
@@ -230,7 +228,6 @@ class Path:
     @property
     def alignments(self) -> list[Alignment]:
         """Get the alignments of the path."""
-
         # Return cached alignments if available and the path has not changed.
         if self._alignments is not None and self._alignments_index == self.index:
             return self._alignments
@@ -299,7 +296,7 @@ class Path:
         return alignments
 
     @property
-    def ID(self):
+    def pid(self):
         """Get the ID of the path used for pruning."""
         return hash((self.index, self._last_end_index))
 
@@ -330,8 +327,8 @@ class Path:
 
         Yields:
             Path: The expanded child paths.
-        """
 
+        """
         # Add delete operation.
         delete_path = self._add_delete()
         if delete_path is not None:
@@ -407,7 +404,6 @@ class Path:
 
     def _add_delete(self) -> Union[None, "Path"]:
         """Expand the path by adding a delete operation."""
-
         # Ensure we are not at the end of the hypothesis sequence.
         if self.hyp_idx >= self.src._hyp_max_idx:
             return None
@@ -427,7 +423,6 @@ class Path:
 
     def _add_insert(self) -> Union[None, "Path"]:
         """Expand the path by adding an insert operation."""
-
         # Ensure we are not at the end of the reference sequence.
         if self.ref_idx >= self.src._ref_max_idx:
             return None
@@ -451,7 +446,6 @@ class Path:
 
     def _add_substitution_or_match(self) -> Union[None, "Path"]:
         """Expand the given path by adding a substitution or match operation."""
-
         # Ensure we are not at the end of either sequence.
         if self.ref_idx >= self.src._ref_max_idx or self.hyp_idx >= self.src._hyp_max_idx:
             return None
@@ -484,7 +478,7 @@ class Path:
 
         return new_path
 
-    def _translate_slice(self, segment_slice: slice, index_map: list[int]) -> Union[None, slice]:
+    def _translate_slice(self, segment_slice: slice, index_map: list[int]) -> None | slice:
         """Translate a slice from the alignment sequence back to the original sequence."""
         slice_indices = index_map[segment_slice]
         slice_indices = list(filter(lambda x: x >= 0, slice_indices))

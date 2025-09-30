@@ -1,7 +1,8 @@
 from __future__ import division
+
+import itertools
 import re
 from collections import Counter, defaultdict, deque
-import itertools
 
 
 class AlignLabels:

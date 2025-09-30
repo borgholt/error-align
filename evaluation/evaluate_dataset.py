@@ -1,10 +1,10 @@
 import json
 import re
 from collections import Counter
+from decimal import Decimal
 from functools import partial
 from pathlib import Path
 from time import time
-from decimal import Decimal
 
 import click
 import numpy as np
@@ -12,11 +12,11 @@ from datasets import Dataset
 from rapidfuzz.distance import Levenshtein
 from tqdm import tqdm
 
-from error_align.baselines.utils import clean_example, normalize_evaluation_segment
-from error_align.baselines.power.power.pronounce import PronouncerLex
 from error_align import ErrorAlign
-from error_align.baselines import OptimalWordAlign, RapidFuzzWordAlign, PowerAlign
-from error_align.utils import OpType, Alignment
+from error_align.baselines import OptimalWordAlign, PowerAlign, RapidFuzzWordAlign
+from error_align.baselines.power.power.pronounce import PronouncerLex
+from error_align.baselines.utils import clean_example, normalize_evaluation_segment
+from error_align.utils import Alignment, OpType
 
 
 def paired_approximate_permutation_test(
@@ -38,6 +38,7 @@ def paired_approximate_permutation_test(
 
     Returns:
         float: p-value indicating the significance of the difference between the two methods.
+
     """
     import numpy as np
 
@@ -71,6 +72,7 @@ def get_phoneme_base_edits(ref: str, hyp: str, phoneme_converter: callable):
 
     Returns:
         int: The number of phoneme edits.
+
     """
     ref_phonemes = list(filter(lambda p: p != "|", phoneme_converter(normalize_evaluation_segment(ref))))
     hyp_phonemes = list(filter(lambda p: p != "|", phoneme_converter(normalize_evaluation_segment(hyp))))
@@ -87,6 +89,7 @@ def replace_repeated_patterns(hyp, min_repeats=10):
     Args:
         hyp (str): The hypothesis transcription.
         min_repeats (int): Minimum number of repeats to consider for replacement.
+
     """
     pattern = re.compile(r"(.+?)\1{" + str(min_repeats - 1) + r",}")
     for m in reversed(list(pattern.finditer(hyp))):
@@ -105,6 +108,7 @@ def get_error_alignments(ref: str, hyp: str, beam_size: int):
 
     Returns:
         List[Alignment]: A list of alignment objects.
+
     """
     return ErrorAlign(ref=ref, hyp=hyp).align(beam_size=beam_size, pbar=False)
 
@@ -118,6 +122,7 @@ def get_optimal_word_alignments(ref: str, hyp: str):
 
     Returns:
         List[Alignment]: A list of alignment objects.
+
     """
     return OptimalWordAlign(ref=ref, hyp=hyp).align()
 
@@ -131,6 +136,7 @@ def get_rapidfuzz_word_alignments(ref: str, hyp: str):
 
     Returns:
         List[Alignment]: A list of alignment objects.
+
     """
     return RapidFuzzWordAlign(ref=ref, hyp=hyp).align()
 
@@ -144,6 +150,7 @@ def get_power_alignments(ref: str, hyp: str):
 
     Returns:
         List[Alignment]: A list of alignment objects.
+
     """
     return PowerAlign(ref=ref, hyp=hyp).align()
 
@@ -156,6 +163,7 @@ def compute_edits(alignments: list[Alignment], phoneme_converter: callable = Non
 
     Returns:
         int: The total number of edits.
+
     """
     if phoneme_converter is None:
         normalize = normalize_evaluation_segment
@@ -196,6 +204,7 @@ def evaluate_method(method: callable, ref: str, hyp: str, phoneme_converter: cal
 
     Returns:
         Tuple[float, int]: A tuple containing the time taken and number of edits.
+
     """
     start_time = time()
     alignments = method(ref=ref, hyp=hyp)
@@ -230,7 +239,6 @@ def evaluate_method(method: callable, ref: str, hyp: str, phoneme_converter: cal
 )
 def main(transcript_file: str, only_error_align: bool, beam_size: int, save_results: bool):
     """Main function to evaluate the alignment algorithms."""
-
     # Validate input file and load dataset.
     transcript_file = Path(transcript_file)
     assert transcript_file.exists(), f"Transcript file {transcript_file} does not exist."
@@ -260,8 +268,8 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int, save_resu
         del methods["Power"]
 
     # Run evaluation.
-    metrics = {k: Counter() for k in methods.keys()}
-    char_edits_all = {k: [] for k in methods.keys()}
+    metrics = {k: Counter() for k in methods}
+    char_edits_all = {k: [] for k in methods}
     phoneme_converter = (
         PronouncerLex("/home/lb/repos/power-asr/lex/cmudict.rep.json").pronounce if language_code == "en" else None
     )
@@ -279,7 +287,7 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int, save_resu
         try:
             for method_name, method in methods.items():
                 _, duration, char_edits, phoneme_edits = evaluate_method(
-                    method, ref, hyp, phoneme_converter=phoneme_converter
+                    method, ref, hyp, phoneme_converter=phoneme_converter,
                 )
                 metrics[method_name]["duration"] += duration
                 metrics[method_name]["character_edits"] += char_edits

@@ -1,9 +1,9 @@
 import unicodedata
-import regex as re
 
+import regex as re
 from num2words import num2words
 
-from error_align.utils import basic_normalizer, basic_tokenizer, NUMERIC_TOKEN
+from error_align.utils import NUMERIC_TOKEN, basic_normalizer, basic_tokenizer
 
 
 def strip_accents(text: str) -> str:

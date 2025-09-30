@@ -1,7 +1,6 @@
 # Parts of code are adapted from 
 # https://www.daniweb.com/software-development/python/code/216839/number-to-word-converter-python
 
-import traceback
 
 class NumbersEnum(object):
     unit = 1
