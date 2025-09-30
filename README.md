@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="58%"/>
+  <img src="https://raw.githubusercontent.com/borgholt/error-align/9f06b4f1025b1d1b1c61f11378e719951bb8918c/.github/assets/logo.svg" alt="ErrorAlign Logo" width="58%"/>
 </p>
 
 <p align="center">
@@ -104,23 +104,23 @@ __Collaborators:__
 
 <div>
   <a href="https://corti.ai">
-    <img src=".github/assets/corti.png" alt="Corti" height="75">
+    <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/corti.png" alt="Corti" height="75">
   </a>
   <img src=".github/assets/empty.png" alt="" width="30">
-  <a href="https://www.aau.dk/">
+  <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/aau.png">
     <img src=".github/assets/aau.png" alt="Aalborg University" height="75">
   </a>
   <img src=".github/assets/empty.png" alt="" width="30">
-  <a href="https://www.aicentre.dk/">
+  <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/pcai.png">
     <img src=".github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75">
   </a>
   <img src=".github/assets/empty.png" alt="" width="30">
-  <a href="https://dtu.dk/">
+  <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/dtu.png">
     <img src=".github/assets/dtu.png" alt="Technical University of Denmark" height="75">
   </a>
   <img src=".github/assets/empty.png" alt="" width="30">
   <a href="https://www.ku.dk/">
-    <img src=".github/assets/ucph.png" alt="University of Copenhagen" height="75">
+    <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/ucph.png" alt="University of Copenhagen" height="75">
   </a>
 </div>
 
