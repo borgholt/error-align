@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11-green" alt="Python Versions">
+  <img src="https://img.shields.io/badge/python-%203.11%20|%203.12-green" alt="Python Versions">
   <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/core-features.svg?style=flat-square" alt="Coverage">
   <img src="https://github.com/borgholt/error-align/actions/workflows/lint.yml/badge.svg?branch=core-features" alt="Linting" style="margin-left:5px;">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
@@ -15,7 +15,7 @@
 
 <br/>
 
-| [Installation](#installation) | [Quickstart](#quickstart) | [Work-in-Progress](#wip) | [Citation and Research](#citation) |
+__Contents__ | [Installation](#installation) | [Quickstart](#quickstart) | [Work-in-Progress](#wip) | [Citation and Research](#citation) |
 
 <br/>
 
