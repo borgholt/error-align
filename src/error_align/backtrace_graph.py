@@ -29,7 +29,7 @@ class Node:
     @property
     def offset_index(self):
         """Get the offset index of the node so indices match the hypothesis and reference strings.
-        
+
         Root will be at (-1, -1).
 
         Returns:
@@ -80,8 +80,8 @@ class BacktraceGraph:
 
     def __init__(self, backtrace_matrix: list[list[int]]) -> None:
         """Create a graph from the backtrace matrix."""
-        self.hyp_dim = len(backtrace_matrix) # B.shape[0]
-        self.ref_dim = len(backtrace_matrix[0]) # B.shape[1]
+        self.hyp_dim = len(backtrace_matrix)
+        self.ref_dim = len(backtrace_matrix[0])
         self.hyp_max_idx = self.hyp_dim - 1
         self.ref_max_idx = self.ref_dim - 1
         self.backtrace_matrix = backtrace_matrix
@@ -222,7 +222,7 @@ class BacktraceGraph:
 
         assert node is not None, f"Node at index {index} does not exist in the graph."
 
-        op_type_combo_code = self.backtrace_matrix[node.hyp_idx][node.ref_idx] # [node.index]
+        op_type_combo_code = self.backtrace_matrix[node.hyp_idx][node.ref_idx]
         op_type_combo = OP_TYPE_COMBO_MAP[op_type_combo_code]
 
         for op_type in op_type_combo:
@@ -253,6 +253,6 @@ class BacktraceGraph:
                 node._outgoing_edge_counts[op_type] = child._bwd_node_count
 
         # Validate that the number of forward and backward paths are equal
-        assert (
-            root_node._bwd_node_count == terminal_node._fwd_node_count
-        ), "The number of forward and backward paths must be equal."
+        assert root_node._bwd_node_count == terminal_node._fwd_node_count, (
+            "The number of forward and backward paths must be equal."
+        )

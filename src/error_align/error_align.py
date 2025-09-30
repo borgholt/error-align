@@ -133,7 +133,6 @@ class ErrorAlign:
 
                 # Transition to all child nodes.
                 for new_path in path.expand():
-
                     if new_path.pid in prune_map:
                         if new_path.cost > prune_map[new_path.pid]:
                             continue
@@ -236,7 +235,6 @@ class Path:
         alignments = []
         start_hyp, start_ref = (0, 0)
         for (end_hyp, end_ref), score in self._end_indices:
-
             end_hyp, end_ref = end_hyp + 1, end_ref + 1
 
             # Construct DELETE alignment.

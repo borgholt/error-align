@@ -23,7 +23,6 @@ def save_audio_segments_and_create_metadata(
 
     example_metadata = []
     for interval in transcript_textgrid[0]:
-
         # Skip empty intervals
         if not interval.mark.strip():
             continue
@@ -91,7 +90,6 @@ def main(primock_path: str | None = None, output_path: str | None = None):
 
     metadata = []
     for audio_path in tqdm(glob(f"{primock_path}/audio/*.wav")):
-
         # Extract session identifier from the audio file name
         session = next(re.finditer(r"day\d_consultation\d{2}_(doctor|patient)", audio_path)).group()
 

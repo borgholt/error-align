@@ -23,6 +23,7 @@ def suppress_all_output():
                 # Optionally suppress tqdm progress bars
                 try:
                     import tqdm
+
                     tqdm.__tqdm_original__ = tqdm.tqdm
                     tqdm.tqdm = lambda *a, **k: iter(a[0] if a else [])  # no-op iterator
                 except ImportError:
@@ -39,7 +40,6 @@ class Phi4MultimodalInstuct:
     """A class to handle the Phi-4 model for speech transcription."""
 
     def __init__(self):
-
         # Load model and processor
         self.model_path = "microsoft/Phi-4-multimodal-instruct"
         self.processor = AutoProcessor.from_pretrained(self.model_path, trust_remote_code=True)
@@ -85,7 +85,6 @@ class Phi4MultimodalInstuct:
 
 
 class WhisperLargeV3:
-
     def __init__(self, language_code: str = "en"):
         """A class to handle the Whisper model for speech transcription."""
         self.model_path = "openai/whisper-large-v3"
@@ -272,7 +271,6 @@ def main(model_name: str, dataset_name: str, subset_name: str, language_code: st
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{model_name}_{dataset_name}_{subset_name}_{language_code}.parquet"
     transcribed_dataset.to_parquet(output_path.as_posix())
-
 
 
 if __name__ == "__main__":

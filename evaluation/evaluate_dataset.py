@@ -278,7 +278,6 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int, save_resu
 
     c_n, p_n = 0, 0
     for example in tqdm(dataset):
-
         ref, hyp = example["ref"], example["hyp"]
         hyp = replace_repeated_patterns(hyp)
         if ref.strip() == "" or hyp.strip() == "":
@@ -287,7 +286,10 @@ def main(transcript_file: str, only_error_align: bool, beam_size: int, save_resu
         try:
             for method_name, method in methods.items():
                 _, duration, char_edits, phoneme_edits = evaluate_method(
-                    method, ref, hyp, phoneme_converter=phoneme_converter,
+                    method,
+                    ref,
+                    hyp,
+                    phoneme_converter=phoneme_converter,
                 )
                 metrics[method_name]["duration"] += duration
                 metrics[method_name]["character_edits"] += char_edits

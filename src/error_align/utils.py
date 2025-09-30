@@ -32,7 +32,7 @@ class Alignment:
             return None
         return f"{'-' if self.left_compound else ''}{self.hyp}{'-' if self.right_compound else ''}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         lc = "-" if self.left_compound else ""
         rc = "-" if self.right_compound else ""
         if self.op_type == OpType.DELETE:
@@ -44,7 +44,7 @@ class Alignment:
         return f'Alignment({self.op_type.name}: "{self.ref}" == {lc}"{self.hyp}"{rc})'
 
 
-def op_type_powerset():
+def op_type_powerset() -> chain:
     """Generate all possible combinations of operation types, except the empty set.
 
     Returns:
