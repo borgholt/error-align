@@ -102,7 +102,6 @@ __Collaborators:__
 
 <br/>
 
-<div style="display: flex; align-items: center;">
 <div>
   <a href="https://corti.ai">
     <img src=".github/assets/corti.png" alt="Corti" height="75">
@@ -123,8 +122,6 @@ __Collaborators:__
   <a href="https://www.ku.dk/">
     <img src=".github/assets/ucph.png" alt="University of Copenhagen" height="75">
   </a>
-</div>
-
 </div>
 
 <br/>
