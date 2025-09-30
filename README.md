@@ -103,11 +103,28 @@ __Collaborators:__
 <br/>
 
 <div style="display: flex; align-items: center;">
-  <img src=".github/assets/corti.png" alt="Corti" height="75" style="margin-right: 50px;">
-  <img src=".github/assets/aau.png" alt="Aalborg Unversity" height="75" style="margin-right: 50px;">
-  <img src=".github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75" style="margin-right: 50px;">
-  <img src=".github/assets/dtu.png" alt="Technical University of Denmark" height="75" style="margin-right: 50px;">
-  <img src=".github/assets/ucph.png" alt="University of Copenhagen" height="75">
+<div>
+  <a href="https://corti.ai">
+    <img src=".github/assets/corti.png" alt="Corti" height="75">
+  </a>
+  <img src=".github/assets/empty.png" alt="" width="30">
+  <a href="https://www.aau.dk/">
+    <img src=".github/assets/aau.png" alt="Aalborg University" height="75">
+  </a>
+  <img src=".github/assets/empty.png" alt="" width="30">
+  <a href="https://www.aicentre.dk/">
+    <img src=".github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75">
+  </a>
+  <img src=".github/assets/empty.png" alt="" width="30">
+  <a href="https://dtu.dk/">
+    <img src=".github/assets/dtu.png" alt="Technical University of Denmark" height="75">
+  </a>
+  <img src=".github/assets/empty.png" alt="" width="30">
+  <a href="https://www.ku.dk/">
+    <img src=".github/assets/ucph.png" alt="University of Copenhagen" height="75">
+  </a>
+</div>
+
 </div>
 
 <br/>
