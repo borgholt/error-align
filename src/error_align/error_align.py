@@ -88,7 +88,12 @@ class ErrorAlign:
         hyp_preview = self.hyp if len(self.hyp) < 20 else self.hyp[:17] + "..."
         return f'ErrorAlign(ref="{ref_preview}", hyp="{hyp_preview}")'
 
-    def align(self, beam_size: int = 100, pbar: bool = False, return_path: bool = False) -> list[Alignment]:
+    def align(
+        self,
+        beam_size: int = 100,
+        pbar: bool = False,
+        return_path: bool = False,
+    ) -> Union[list[Alignment], "Path"]:
         """Perform beam search to align reference and hypothesis texts.
 
         Args:
@@ -225,11 +230,11 @@ class Path:
     @property
     def alignments(self) -> list[Alignment]:
         """Get the alignments of the path."""
-        
+
         # Return cached alignments if available and the path has not changed.
         if self._alignments is not None and self._alignments_index == self.index:
             return self._alignments
-        
+
         self._alignments_index = self.index
         alignments = []
         start_hyp, start_ref = (0, 0)
@@ -287,10 +292,10 @@ class Path:
                 alignments.append(alignment)
 
             start_hyp, start_ref = end_hyp, end_ref
-        
+
         # Cache the computed alignments.
         self._alignments = alignments
-        
+
         return alignments
 
     @property
