@@ -96,7 +96,7 @@ def is_consonant(c: str) -> bool:
     return unidecode(c)[0] in "bcdfghjklmnpqrstvwxyz"
 
 
-def categorize_char(c: str) -> str:
+def categorize_char(c: str) -> int:
     """
     Categorize a character as 'vowel', 'consonant', or 'unvoiced'.
 
@@ -116,7 +116,7 @@ def categorize_char(c: str) -> str:
         return 3  # NOTE: Unvoiced characters (only apostrophes are expected by default).
 
 
-def get_manhattan_distance(a: tuple[int], b: tuple[int]) -> int:
+def get_manhattan_distance(a: tuple[int, int], b: tuple[int, int]) -> int:
     """
     Calculate the Manhattan distance between two points a and b.
     """

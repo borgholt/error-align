@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Union
 
 import regex as re
 from tqdm import tqdm
@@ -222,7 +223,7 @@ class Path:
         return f"Path(({self.ref_idx}, {self.hyp_idx}), score={self.cost})"
 
     @property
-    def alignments(self):
+    def alignments(self) -> list[Alignment]:
         """Get the alignments of the path."""
         
         # Return cached alignments if available and the path has not changed.
@@ -326,17 +327,17 @@ class Path:
             Path: The expanded child paths.
         """
 
-        # Add delete operation
+        # Add delete operation.
         delete_path = self._add_delete()
         if delete_path is not None:
             yield delete_path
 
-        # Add insert operation
+        # Add insert operation.
         insert_path = self._add_insert()
         if insert_path is not None:
             yield insert_path
 
-        # Add substitution or match operation
+        # Add substitution or match operation.
         sub_or_match_path = self._add_substitution_or_match()
         if sub_or_match_path is not None:
             yield sub_or_match_path
@@ -370,7 +371,7 @@ class Path:
             self._end_indices += ((index, self._open_cost),)
             self._reset_segment_variables(index)
 
-    def _end_segment(self) -> None:
+    def _end_segment(self) -> Union[None, "Path"]:
         """End the current segment, if criteria for an insertion, a substitution, or a match are met."""
         hyp_slice = slice(self._last_end_index[0] + 1, self.index[0] + 1)
         hyp_slice = self._translate_slice(hyp_slice, self.src._hyp_index_map)
@@ -395,11 +396,11 @@ class Path:
         self._reset_segment_variables(self.index)
         return self
 
-    def _in_backtrace_node_set(self, index):
+    def _in_backtrace_node_set(self, index) -> bool:
         """Check if the given operation is an optimal transition at the current index."""
         return index in self.src._backtrace_node_set
 
-    def _add_delete(self):
+    def _add_delete(self) -> Union[None, "Path"]:
         """Expand the path by adding a delete operation."""
 
         # Ensure we are not at the end of the hypothesis sequence.
@@ -409,7 +410,7 @@ class Path:
         # Transition and update costs.
         new_path = self._transition_and_shallow_copy(ref_step=0, hyp_step=1)
         is_backtrace = self._in_backtrace_node_set(self.index)
-        is_delimiter = self.src._hyp_char_types[new_path.hyp_idx] == 0  # NOTE: 0 indicates delimiter
+        is_delimiter = self.src._hyp_char_types[new_path.hyp_idx] == 0  # NOTE: 0 indicates delimiter.
         new_path._open_cost += 1 if is_delimiter else 2
         new_path._open_cost += 0 if is_backtrace or is_delimiter else 1
 
@@ -419,7 +420,7 @@ class Path:
 
         return new_path
 
-    def _add_insert(self):
+    def _add_insert(self) -> Union[None, "Path"]:
         """Expand the path by adding an insert operation."""
 
         # Ensure we are not at the end of the reference sequence.
@@ -433,7 +434,7 @@ class Path:
 
         # Update costs.
         is_backtrace = self._in_backtrace_node_set(self.index)
-        is_delimiter = self.src._ref_char_types[new_path.ref_idx] == 0  # NOTE: 0 indicates delimiter
+        is_delimiter = self.src._ref_char_types[new_path.ref_idx] == 0  # NOTE: 0 indicates delimiter.
         new_path._open_cost += 1 if is_delimiter else 2
         new_path._open_cost += 0 if is_backtrace or is_delimiter else 1
 
@@ -443,7 +444,7 @@ class Path:
 
         return new_path
 
-    def _add_substitution_or_match(self):
+    def _add_substitution_or_match(self) -> Union[None, "Path"]:
         """Expand the given path by adding a substitution or match operation."""
 
         # Ensure we are not at the end of either sequence.
@@ -478,8 +479,8 @@ class Path:
 
         return new_path
 
-    def _translate_slice(self, segment_slice: slice, index_map: list[int]) -> slice | None:
-        """Translate a slice from the aligned sequence back to the original sequence."""
+    def _translate_slice(self, segment_slice: slice, index_map: list[int]) -> Union[None, slice]:
+        """Translate a slice from the alignment sequence back to the original sequence."""
         slice_indices = index_map[segment_slice]
         slice_indices = list(filter(lambda x: x >= 0, slice_indices))
         if len(slice_indices) == 0:
@@ -487,7 +488,7 @@ class Path:
         start, end = int(slice_indices[0]), int(slice_indices[-1] + 1)
         return slice(start, end)
 
-    def _substitution_penalty(self, index: tuple[int, int] = None):
+    def _substitution_penalty(self, index: tuple[int, int] | None = None) -> int:
         """Get the substitution penalty given an index."""
         index = index or self.index
         ref_is_not_empty = index[1] > self._last_end_index[1]
