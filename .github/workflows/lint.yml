@@ -1,10 +1,10 @@
-name: Lint with Ruff
+name: Ruff
 
 on:
   pull_request:
   push:
     branches:
-      - core-features
+      - main
 
 jobs:
   lint:

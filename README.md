@@ -3,8 +3,10 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11-green" alt="Python Versions">
   <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/core-features.svg?style=flat-square" alt="Coverage">
   <img src="https://github.com/borgholt/error-align/actions/workflows/lint.yml/badge.svg?branch=core-features" alt="Linting" style="margin-left:5px;">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
 </p>
 
 <br/>
@@ -13,11 +15,7 @@
 
 <br/>
 
-__Table of Contents:__
-- [Installation](#installation)
-- [Usage](#usage)
-- [Work-in-Progress](#wip)
-- [Citation and Research](#citation)
+| [Installation](#installation) | [Quickstart](#quickstart) | [Work-in-Progress](#wip) | [Citation and Research](#citation) |
 
 <br/>
 
@@ -28,16 +26,14 @@ __Table of Contents:__
 ## Installation
 
 ```
-pip install error_align
+pip install error-align
 ```
 
 <br/>
 
+<a name="quickstart">
 
-
-<a name="usage">
-
-## Usage
+## Quickstart
 ```python
 from error_align import error_align
 
@@ -57,22 +53,17 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 
-__Notes and limitations:__
-- The `error_align` function is not cummutative.
-- The algorithm only works for latin-script languages.
-
 <br/>
-
 
 <a name="wip">
 
 ## Work-in-Progress
 
-🚧 Optimization for longform text.
+- Optimization for longform text.
 
-🚧 Efficient word-level first-pass.
+- Efficient word-level first-pass.
 
-🚧 C++ version with Python bindings.
+- C++ version with Python bindings.
 
 <br/>
 
@@ -85,7 +76,7 @@ __Notes and limitations:__
 @article{borgholt2021alignment,
   title={A Text-To-Text Alignment Algorithm for Better Evaluation of Modern Speech Recognition Systems},
   author={Borgholt, Lasse and Havtorn, Jakob and Igel, Christian and Maal{\o}e, Lars and Tan, Zheng-Hua},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  journal={arXiv preprint arXiv:2509.24478},
   year={2025}
 }
 ```

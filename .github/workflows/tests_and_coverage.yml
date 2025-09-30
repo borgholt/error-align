@@ -3,10 +3,10 @@ name: Tests and Coverage
 on:
   push:
     branches:
-      - core-features
+      - main
   pull_request:
     branches:
-      - core-features
+      - main
 
 jobs:
   test:
