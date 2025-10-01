@@ -4,6 +4,7 @@ version = "0.1.0b1"
 description = "Text-to-text alignment algorithm for speech recognition error analysis."
 authors = ["Lasse Borgholt <lb@corti.ai>"]
 license = "MIT"
+urls = { "Homepage" = "https://github.com/borgholt/error-align" }
 keywords = ["speech-recognition", "text-alignment", "NLP", "evaluation"]
 classifiers = [
     "Programming Language :: Python :: 3",
