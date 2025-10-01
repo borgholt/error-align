@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/logo.svg" alt="ErrorAlign Logo" width="75%"/>
+  <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/logo.svg" alt="ErrorAlign Logo" width="85%"/>
 </p>
 
 <p align="center">
