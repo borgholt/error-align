@@ -13,11 +13,9 @@
 
 **Text-to-text alignment algorithm for speech recognition error analysis.** ErrorAlign helps you dig deeper into your speech recognition projects by accurately aligning each word in a reference transcript with the model-generated transcript. Unlike traditional methods, such as Levenshtein-based alignment, it is not restricted to simple one-to-one alignment, but can map a single reference word to multiple words or subwords in the model output. This enables quick and reliable identification of error patterns in rare words, names, or domain-specific terms that matter most for your application.
 
-<br/>
 
 __Contents__ | [Installation](#installation) | [Quickstart](#quickstart) | [Work-in-Progress](#wip) | [Citation and Research](#citation) |
 
-<br/>
 
 
 
@@ -29,7 +27,6 @@ __Contents__ | [Installation](#installation) | [Quickstart](#quickstart) | [Work
 pip install error-align
 ```
 
-<br/>
 
 <a name="quickstart">
 
@@ -53,19 +50,14 @@ Alignment(SUBSTITUTE: "noting" -> "nothing"),
 Alignment(INSERT: "period")
 ```
 
-<br/>
-
 <a name="wip">
 
 ## Work-in-Progress
 
 - Optimization for longform text.
-
 - Efficient word-level first-pass.
-
 - C++ version with Python bindings.
 
-<br/>
 
 
 <a name="citation">
@@ -123,7 +115,5 @@ __Collaborators:__
     <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/ucph.png" alt="University of Copenhagen" height="75">
   </a>
 </div>
-
-<br/>
 
 ---
