@@ -108,15 +108,15 @@ __Collaborators:__
   </a>
   <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/empty.png" alt="" width="30">
   <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/aau.png">
-    <img src=".github/assets/aau.png" alt="Aalborg University" height="75">
+    <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/aau.png" alt="Aalborg University" height="75">
   </a>
   <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/empty.png" alt="" width="30">
   <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/pcai.png">
-    <img src=".github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75">
+    <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/pcai.png" alt="Pioneer Centre for Artificial Intelligence" height="75">
   </a>
   <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/empty.png" alt="" width="30">
   <a href="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/dtu.png">
-    <img src=".github/assets/dtu.png" alt="Technical University of Denmark" height="75">
+    <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/dtu.png" alt="Technical University of Denmark" height="75">
   </a>
   <img src="https://raw.githubusercontent.com/borgholt/error-align/refs/heads/main/.github/assets/empty.png" alt="" width="30">
   <a href="https://www.ku.dk/">
