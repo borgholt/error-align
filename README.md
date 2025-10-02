@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-%203.11%20|%203.12-green" alt="Python Versions">
+  <img src="https://img.shields.io/badge/python-%203.11%20|%203.12%20|%203.13-green" alt="Python Versions">
   <img src="https://img.shields.io/codecov/c/github/borgholt/error-align/main.svg?style=flat-square" alt="Coverage">
   <img src="https://github.com/borgholt/error-align/actions/workflows/lint.yml/badge.svg?branch=main" alt="Linting" style="margin-left:5px;">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
@@ -74,7 +74,7 @@ Alignment(INSERT: "period")
 ```
 
 __To reproduce results from the paper:__
-- Install with extra evaluation dependencies:
+- Install with extra evaluation dependencies - only supported with Python 3.12:
   - `pip install error-align[evaluation]`
 - Clone this repository:
   - `git clone https://github.com/borgholt/error-align.git`

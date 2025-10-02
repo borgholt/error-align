@@ -1,15 +1,16 @@
 [tool.poetry]
 name = "error-align"
-version = "0.1.0b1"
+version = "0.1.0b2"
 description = "Text-to-text alignment algorithm for speech recognition error analysis."
 authors = ["Lasse Borgholt <lb@corti.ai>"]
 license = "MIT"
-urls = { "Homepage" = "https://github.com/borgholt/error-align" }
+urls = { "Homepage" = "https://github.com/corticph/error-align" }
 keywords = ["speech-recognition", "text-alignment", "NLP", "evaluation"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries",
@@ -27,39 +28,39 @@ packages = [
 [tool.poetry.dependencies]
 
 # Core dependencies
-python = ">=3.11,<3.13"
-regex = "^2024.11.6"
+python = ">=3.11,<3.14"
 tqdm = "^4.67.1"
 unidecode = "^1.4.0"
+regex = "^2025.9.18"
 
-# Extra dependencies
-rapidfuzz = { version = "^3.13.0", optional = true }
-num2words = { version = "^0.5.14", optional = true }
-datasets = { version = "^3.3.2", optional = true }
-soundfile = { version = "^0.13.1", optional = true }
-librosa = { version = "^0.11.0", optional = true }
-click = { version = "^8.2.1", optional = true }
-pandas = { version = "^2.3.1", optional = true }
-scipy = { version = "^1.16.1", optional = true }
-textgrid = { version = "^1.6.1", optional = true }
-nemo-toolkit = {extras = ["all"], version = "^2.4.0", optional = true}
-transformers = { version = "^4.51.3", optional = true }
-backoff = { version = "^2.2.1", optional = true }
-gitpython = { version = "^3.1.45", optional = true }
-pyphen = { version = "^0.17.2", optional = true }
-matplotlib = { version = "^3.10.6", optional = true }
-numpy = { version = ">=1.22,<2.0", optional = true }
+# Extra dependencies (only valid on Python 3.12)
+rapidfuzz = { version = "^3.13.0", optional = true, markers = "python_version == '3.12'" }
+num2words = { version = "^0.5.14", optional = true, markers = "python_version == '3.12'" }
+datasets = { version = "^3.3.2", optional = true, markers = "python_version == '3.12'" }
+soundfile = { version = "^0.13.1", optional = true, markers = "python_version == '3.12'" }
+librosa = { version = "^0.11.0", optional = true, markers = "python_version == '3.12'" }
+click = { version = "^8.2.1", optional = true, markers = "python_version == '3.12'" }
+pandas = { version = "^2.3.1", optional = true, markers = "python_version == '3.12'" }
+scipy = { version = "^1.16.1", optional = true, markers = "python_version == '3.12'" }
+textgrid = { version = "^1.6.1", optional = true, markers = "python_version == '3.12'" }
+nemo-toolkit = { extras = ["all"], version = "^2.4.0", optional = true, markers = "python_version == '3.12'" }
+transformers = { version = "^4.51.3", optional = true, markers = "python_version == '3.12'" }
+backoff = { version = "^2.2.1", optional = true, markers = "python_version == '3.12'" }
+gitpython = { version = "^3.1.45", optional = true, markers = "python_version == '3.12'" }
+pyphen = { version = "^0.17.2", optional = true, markers = "python_version == '3.12'" }
+matplotlib = { version = "^3.10.6", optional = true, markers = "python_version == '3.12'" }
+numpy = { version = ">=1.22,<2.0", optional = true, markers = "python_version == '3.12'" }
 
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-ipython = "9.3.0"
 ruff = ">=0.1,<0.13"
 pre-commit = "^4.2.0"
 build = "^1.3.0"
 twine = "^6.2.0"
+ipython = "^9.6.0"
 
 [tool.poetry.group.test]
 optional = true
